@@ -1,0 +1,16 @@
+\begin{table}[h]
+	\fontsize{7}{10}
+	\selectfont
+	\begin{tabular}{lcccc}
+		\toprule
+		\multicolumn{5}{c}{\tiny Train set} \\
+		\tiny Eval. set& \textbf{wo/agnews} & \textbf{wo/yahoo} & \textbf{wo/yelp-full} & \textbf{wo/mnli} \\
+		\hline
+		\textbf{agnews}    & 78.8 \tiny$\pm$2.53        & 91.9 \tiny$\pm$0.08        & 91.9   \tiny$\pm$0.09          & 91.7 \tiny$\pm$0.10       \\
+		\textbf{yahoo}     & 72.3 \tiny$\pm$0.33        & 52.2 \tiny$\pm$1.72        & 72.1   \tiny$\pm$0.13          & 72.2 \tiny$\pm$0.20       \\
+		\textbf{yelp-full} & 65.5 \tiny$\pm$0.20        & 65.6 \tiny$\pm$0.25        & 33.8   \tiny$\pm$5.12          & 65.5 \tiny$\pm$0.24       \\
+		\textbf{mnli}      & 85.7 \tiny$\pm$0.20        & 85.8 \tiny$\pm$0.11        & 85.7   \tiny$\pm$0.27          & 37.3 \tiny$\pm$3.27      \\
+		\bottomrule
+	\end{tabular}
+	\caption{Multi-task using logits}\label{tab:multi-use-logits-summary}
+\end{table}
