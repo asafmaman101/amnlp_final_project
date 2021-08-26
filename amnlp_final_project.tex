@@ -1,17 +1,3 @@
-%
-% File acl2020.tex
-%
-%% Based on the style files for ACL 2020, which were
-%% Based on the style files for ACL 2018, NAACL 2018/19, which were
-%% Based on the style files for ACL-2015, with some improvements
-%%  taken from the NAACL-2016 style
-%% Based on the style files for ACL-2014, which were, in turn,
-%% based on ACL-2013, ACL-2012, ACL-2011, ACL-2010, ACL-IJCNLP-2009,
-%% EACL-2009, IJCNLP-2008...
-%% Based on the style files for EACL 2006 by 
-%%e.agirre@ehu.es or Sergi.Balari@uab.es
-%% and that of ACL 08 by Joakim Nivre and Noah Smith
-
 \documentclass[11pt,a4paper]{article}
 \usepackage[hyperref]{acl2020}
 \usepackage{times}
@@ -50,6 +36,7 @@
 
 \begin{document}
 \maketitle
+
 \begin{abstract}
 In recent years, appearance of large language models paved the way to prompt such model to extract predictions.
 The idea behind this mechanism is to provide information about the task and use the model's general knowledge for a specific use.
@@ -74,20 +61,14 @@ This mechanism reveals a few adventages over conventional classification methods
 First, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (a.k.a. PVP).
 This way the model gets information about the task and may be able to infer it from the PVP.
 This can enable the model to adopt itself to new tasks without a need for large batch of new-task examples.
-%This method utilizes the language modeling capabilities and may be able to infer the task from the PVP.
 
 Another advantage is that training one language modeling head can be used for multiple tasks at once, without a need to train separate model for each.
 Finally, making decisions using MLM predictions leverages the language modeling knowlaged attained during pre-training and use it for classification.
-%This facilitates more versatile use of the model but also leverages the pre-trained language modeling knowledge for the use of classification.
 
 In this project I would like to investigate how masked language models performance are effected when trained on multiple classification tasks.
 In addition, I would like to examine whether providing task description in the form of PVP can help MLMs generalize to \textit{unseen tasks}.
 Finally, I will test these questions in few-shot setting using PET pipeline.
 
-% and makes decisions according to the scores the model assigns to each class's specified token,
-%which is called \textit{verbalizer}.
-%Formatting the inputs into task specific pattern and choosing representative words for classes can be seen as providing task description together with the input.
-%Pre-trained language models can handle various classification tasks using fine-tuned classification head.
 
 \input{single-on-train-set-summary}
 
@@ -151,6 +132,7 @@ The patterns for each task are presented in Appendix~\ref{apx:patterns}.
 
 
 \section{Experiments}
+\label{sec:experiments}
 
 I conducted several experiments to test the questions raised above.
 For each task, a set of PVPs was manually chosen, the PVP where taken from \citet{schick2020exploiting} for tasks that apper in their work.
@@ -168,8 +150,10 @@ The performance of supervised training using PVPs succeed to match the matching 
 
 In addition, when evaluating models trained on single task on different tasks, few of them showed improvement meaning some sense of generalization.
 In contrast, there was pairs of tasks that training on one deteriorated the performance on another.
+The results for this experiments are reported in Table~\ref{tab:single-on-train-set-summary}.
+Extended report can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}.
 One can notice that training on AGnews and Yahoo! increased the performance when evaluating on the other task, compared to the unsupervised baseline.
-The 
+On the flip sid
 
 \subsection{Multi-Task Training}
 
@@ -183,7 +167,6 @@ I evaluated all models on each task, the results are reported in Table~\ref{tab:
 
 \subsection{PET Multi-Task Training}
 Fig~\ref{tab:multi-use-logits-summary}
-
 
 \input{multi-use-logits-summary}
 
@@ -218,7 +201,6 @@ Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1
 \label{apx:full-results-report}
 The exact score for each single experiment is describe in and Table~\ref{tab:single-on-train-set} and Table~\ref{tab:multi-use-logits-full}.
 \input{multi-use-logits-full}
-
 \input{single-on-train-set}
 
 
