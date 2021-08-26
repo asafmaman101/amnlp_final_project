@@ -201,6 +201,15 @@ Fig~\ref{tab:multi-use-logits-summary}
 \label{sec:appendix}
 
 \subsection{Implementation Details}
+The following hyper parameters were chosen for the experiments in Section~\ref{sec:experiments}.
+I chose the RobertaLarge as the model to be used across all experiments.
+This choice was done in order to be able to compare results with \citet{schick2020exploiting}.
+We trained the model with a max sequence size of 256 tokens.
+The batch size was chosen so that it will fit into 11GB GPU infrastucture, this led to a batch size of 2. 
+In order to simulate larger batch sizes we accumulated gradients for 8 steps to have effective batch size of 32.
+Learning rate was chosen to be 1e-5, we trained each model for 3 epochs on the whole train set.
+Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1e-8.
+
 
 \subsection{Patterns}
 \label{apx:patterns}
