@@ -175,24 +175,58 @@ In addition, when evaluating models trained on single task on different tasks, f
 In contrast, there was pairs of tasks that training on one deteriorated the performance on another.
 The results for this experiments are reported in Table~\ref{tab:single-on-train-set-summary}.
 Extended report can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}.
+
 One can notice that training on AGnews and Yahoo! increased the performance when evaluating on the other task, compared to the unsupervised baseline.
-On the flip sid
+An important artifact regarding this pair of datasets is that although their distribution is different and the set of classes is different, they share two class labels that take part in both: Sports and Business.
+Our method does facilitate classifing while being agnostic to the number of classes.
+However, in this pair of tasks we cannot still conclude the model learned to generalize to unseen tasks, because they are essentially too close one to another.
 
-\subsection{Multi-Task Training}
+For some tasks, the performance of different PVPs performed very differently.
+For example how QQP performed on Yelp Polarity task, when looking on the extended results (that can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report} we can see that two of the PVPs scored roughly 88\% but one PVP got ~49\%.
+This emphesises the importance of PVP choice for generalization.
 
+\vspace{8pt}
+\noindent\textbf{Multi-Task Training}\quad
 \input{multi-on-train-set-summary}
-
-To test how training on multi-task will generalize to unseen tasks, I combined the training set of various tasks ans trained a model on multiple tasks.
-Each time I omitted one task from the set of all tasks and trained a model on all the others.
+To test how training on multi-task will generalize to unseen tasks, I combined the training set of multiple tasks and trained a model all of them together.
+Each time I omitted one task from the training tasks and fit a model on all the others.
 The missing task was the one that I aimed to generalize to.
-I evaluated all models on each task, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
+I evaluated all models on each task separatly, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
+
+When omitting agnews, the model succeeded to get 82.0\% accuracy, that is and improvement over the baseline.
+This means that training on the other tasks benefits with this task and in fact generalizes.
+Although, when comparing this score to the single task traing we can see almost the same result when evalutaing a model that was trained on yahoo to agnews.
+This points out on the fact that most of the knowledge learned in training got from the Yahoo task and not from the remaining tasks.
+Here is worth mentioning that both yahoo
+
+To some extent, training a model for multi-tasks benefits with performance on unseen tasks.
+It still seem that the ability of the model to infer the task according to the PVP is limited to semantically close tasks.
+While from the results I didn't observe option to train a model that generalize to any task, regardless of the tasks it was trained on, I think that this limitation is somewhat expected.
+Moreover, as PVP is the key for the model to infer the task, its choice might be crucial for success in generalizing to unseen tasks.
+Therefore, one might suggest better ways to generate PVP in place of manually choosing them.
+I think this adjustment can improve generalization performance a lot.
 
 
-\subsection{PET Multi-Task Training}
-Fig~\ref{tab:multi-use-logits-summary}
-
+\vspace{8pt}
+\noindent\textbf{PET Multi-Task Training}\quad
 \input{multi-use-logits-summary}
+In \citet{schick2020exploiting}, the authors presented a method for training in few-shot regime called PET.
+As reported in the paper, their method outperformed other supervised baselines.
 
+As an extention for the multi-tasking training done previously in this project, I used PET to train multi-task models with few examples for each task.
+I wanted to examine whether the multi-task training will improve performace while exploiting the ability to increase dataset size by taking samples from different tasks.
+
+The results for this setup can be found in Table~\ref{tab:multi-use-logits-summary}.
+For each task, I used 1000 examples from each task to train ensemble of models.
+I then used a soft-labeled dataset of size 20K to train one classifier, but here, differently from \citet{schick2020exploiting}, I used PVPs also for the classifier.
+That is, instead of training classifier with classification head for a specific task, I used different PVP for each task.
+
+The results are mixed, when omitting AG News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned in \todo{(reference)}).
+For Yelp Full and MNLI, the model fails to perform without seeing the task.
+On the other hand, the lack in performance does not seem to stem from the small amount of example.
+This can be seen when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary}.
+In comparison to supervised results, PET performs slightly (but not significantly) worse.
+This result is not suprising and mostly follows the results revealed in \citet{schick2020exploiting}, but testing here shows that it can also get the benfits of multi-tasking.
 
 \section{Conclusion}
 
