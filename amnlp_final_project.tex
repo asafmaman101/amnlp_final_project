@@ -61,27 +61,25 @@ In addition, when training on semantically similar tasks, multi-task training ca
 \section{Introduction}
 
 When handling classification tasks, the common method is to fine-tune the model together with a task-specific classification head.
-One alternative way to deal with classification tasks is to reformulate the input examples as cloze-style phrases.
+Recenly, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta}, utilizing the knowledge attained from pre-training via prompting has become feasible.
+Providing task description together with examples has proved to be useful \citep{radford2019language} even for zero-shot and few-shot inference.
+This also envailed an alternative way to deal with classification tasks: reformulating the input examples as cloze-style phrases.
 Each example is plugged into a fixed sentence structure, called \textit{pattern}, containing exactly one mask token.
 The prediction is then determined according to scores the model assigns to a subset of tokens, called \textit{verbalizers}, each associated with one of the classes.
 This mechanism reveals a few adventages over conventional classification methods.
-First, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (a.k.a. PVP).
+
+First, as mentioned before, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (a.k.a. PVP).
 This way the model gets information about the task and may be able to infer it from the PVP.
 This can enable the model to adopt itself to new tasks without a need for large batch of new-task examples.
-
 Another advantage is that training one language modeling head can be used for multiple tasks at once, without a need to train separate model for each.
-Finally, making decisions using MLM predictions leverages the language modeling knowlaged attained during pre-training and use it for classification.
+Finally, making decisions using MLM predictions leverages the language modeling knowledge attained during pre-training and use it for classification.
 
-In this project I would like to investigate how masked language models performance are effected when trained on multiple classification tasks.
+In this project I would like to investigate how masked language models (MLMs) performance are effected when trained on multiple classification tasks.
 In addition, I would like to examine whether providing task description in the form of PVP can help MLMs generalize to \textit{unseen tasks}.
 Finally, I will test these questions in few-shot setting using PET pipeline.
 
-
+% SINGLE TASK TRAINING ON TRAIN SET SUMMARY TABLE
 \input{single-on-train-set-summary}
-
-
-
-
 
 \section{Method}
 
