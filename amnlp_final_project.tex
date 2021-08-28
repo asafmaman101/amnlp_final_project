@@ -46,10 +46,9 @@
 \maketitle
 
 \begin{abstract}
-In recent years, appearance of large language models paved the way to prompt such model to extract predictions.
-The idea behind this mechanism is to provide information about the task and use the model's general knowledge for a specific use.
-This method appeard to be relatively successful and reveals many new options for potential use.
-One approach for this subject is reformulating inputs as cloze-style phrases and leave one mask token to be used to derive classification prediction.
+In recent years, appearance of large language models paved the way to calculate predictions via prompts.
+One key feature of this mechanism is the ability to provide information about the task.
+One prompting approach is reformulating inputs as cloze-style phrases and deriving predictions accorting the the probabilites the model assigns.
 The restructured sequence and the tokens corresponding to each class label are called patten-verbalizer pair (PVP) and are used as task description.
 Evaluating predictions this way enables us to use one language modeling head for multiple tasks with no need to initialize and train task specific weights.
 In order to learn new task, the only change that needs to be done is chosing PVP for the new task. 
