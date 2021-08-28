@@ -1,16 +1,15 @@
-\begin{table}[h]
+\begin{table}[t]
 	\fontsize{7}{10}
 	\selectfont
 	\begin{tabular}{lcccc}
 		\toprule
-		\multicolumn{5}{c}{\tiny Train set} \\
-		\tiny Eval. set& \textbf{wo/agnews} & \textbf{wo/yahoo} & \textbf{wo/yelp-full} & \textbf{wo/mnli} \\
+		& \textbf{wo/agnews} & \textbf{wo/yahoo} & \textbf{wo/yelp-full} & \textbf{wo/mnli} \\
 		\hline
 		\textbf{agnews}    & 82.0 \tiny$\pm$0.25        & 93.6 \tiny$\pm$0.23        & 93.4   \tiny$\pm$0.16          & 93.4 \tiny$\pm$0.27       \\
-		\textbf{yahoo}     & 75.3 \tiny$\pm$0.23        & 51.8 \tiny$\pm$2.50        & 75.18   \tiny$\pm$0.25          & 75.1 \tiny$\pm$0.12       \\
-		\textbf{yelp-full} & 67.9 \tiny$\pm$0.43        & 67.9 \tiny$\pm$0.54        & 30.55   \tiny$\pm$8.51          & 68.19 \tiny$\pm$0.15       \\
-		\textbf{mnli}      & 88.27 \tiny$\pm$0.09        & 88.17 \tiny$\pm$0.37        & 85.2   \tiny$\pm$4.37          & 35.31 \tiny$\pm$0.88      \\
+		\textbf{yahoo}     & 75.3 \tiny$\pm$0.23        & 51.8 \tiny$\pm$2.50        & 75.1   \tiny$\pm$0.25          & 75.1 \tiny$\pm$0.12       \\
+		\textbf{yelp-full} & 67.9 \tiny$\pm$0.43        & 67.9 \tiny$\pm$0.54        & 30.5   \tiny$\pm$8.51          & 68.1 \tiny$\pm$0.15       \\
+		\textbf{mnli}      & 88.2 \tiny$\pm$0.09        & 88.1 \tiny$\pm$0.37        & 85.2   \tiny$\pm$4.37          & 35.3 \tiny$\pm$0.88      \\
 		\bottomrule
 	\end{tabular}
-	\caption{Multi-task supervised}\label{tab:multi-on-train-set-summary}
+	\caption{\textbf{Multi-task training performence on all tasks}~---~results of models trained on all tasks exept one. Reported accuracy results are averaged over all three possible patterns with standard deviation reported aside. Omitting different training tasks are arranged in columns (\textit{i.e.} "wo/agnews" means training on all other tasks \textbf{except} agnews) and evaluation tasks in rows.}\label{tab:multi-on-train-set-summary}
 \end{table}

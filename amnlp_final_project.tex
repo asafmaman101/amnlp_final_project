@@ -8,6 +8,13 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{lscape}
+\usepackage{rotating}
+%\usepackage{geometry}
+%\usepackage{pdfpages}
 \graphicspath{ {./figs/} }
  
 % This is not strictly necessary, and may be commented out,
@@ -25,6 +32,7 @@
 % in the camera-ready version and ask you to change it back.
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
+\newcommand\todo[1]{\textcolor{red}{#1}}
 
 \title{Multi-Task Patterns Training for Task Generalization}
 
@@ -101,29 +109,37 @@ We then use the cross-entropy between $q_\text{\textbf{p}}(l|\textbf{x})$ and th
 We manually choose three PVPs for each task in a set of tasks $\{A_1, A_2, \dots, A_k\}$ and use them in the following experiments.
 
 
+
 \section{Datasets}
 
-\subsection{AG's News}
+I chose the following datasets to evaluate performence on.
+
+\vspace{8pt}
+\noindent \textbf{AG's News} \quad
 A dataset for text categorization which contains 120K train samples and 7.6K test samples.
 It contains articles formatted as title and text body.
-The task is to classify the news to four categories: (1) World, (2) Sports, (3) Business, (4) Science/Tech.
+The task is to classify the news to four categories: (1) World, (2) Sports, (3) Business, (4) Tech.
 
-\subsection{Yahoo}
+\vspace{8pt}
+\noindent \textbf{Yahoo} \quad
 Text categorization dataset. It contains 1.46M pairs of questions and answers.
 The train set contains 1.4M samples and test set 60K samples.
 The task is to classify each pair to its subject out of 10 possible options: (1) Society (2) Science (3) Health (4) Education (5) Computer (6) Sports (7) Business (8) Entertainment (9) Relationship (10) Politics.
 
-\subsection{Yelp}
+\vspace{8pt}
+\noindent \textbf{Yelp} \quad
 Yelp Reviews dataset task is to classify a review for a 5-star rating.
 It contains 650K train samples and 50K test samples.
 There is another version for that task, while the 5-star scale named "Yelp Full", the second task is to predict whether the review sentiment was positive or negative.
 The second task is named "Yelp Polarity".
 
-\subsection{MNLI}
+\vspace{8pt}
+\noindent \textbf{MNLI} \quad
 The MNLI dataset contains pairs of sentences to classify between three possible NLI labels: (1) entailment (2) natural (3) contradiction. 
 The dataset has 392K train and 9.8K test samples. 
 
-\subsection{Quora Question Pairs}
+\vspace{8pt}
+\noindent \textbf{Quora Question Pairs} \quad
 QQP contains 363K train samples and 40K test samples.
 The task is to predict whether two sentences are paraphrases one of the other.
 
@@ -135,16 +151,23 @@ The patterns for each task are presented in Appendix~\ref{apx:patterns}.
 \label{sec:experiments}
 
 I conducted several experiments to test the questions raised above.
-For each task, a set of PVPs was manually chosen, the PVP where taken from \citet{schick2020exploiting} for tasks that apper in their work.
+For each task, a set of PVPs was manually chosen, the PVP where taken from \citet{schick2020exploiting} for tasks that appear in their work.
 For the additional tasks, the PVPs were chosen manually by human common sense. 
 
 Each setting that will be described below was trained and evaluated on each PVP separatly.
 To provide further analysis and possibly more insights about the behavior of the method, I evaluated each model not only on the PVP that it was trained on.
 
+\subsection{Experimental Setup}
+\label{sub-sec:experimental-setup}
+
+All the additional implementation details and code can be found in this github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
+
 \subsection{Unsupervised Baselines}
 To see how the fine-tuning influences each tasks performance, I evaluated as baseline the zero-shot performance of the pre-trained model with each PVP.
 
-\subsection{Single Task Training}
+\subsection{Results}
+
+\noindent\textbf{Single-task Training}\quad
 Firsly, to see how our model perform on each task separatly, I trained and evaluated on single task.
 The performance of supervised training using PVPs succeed to match the matching results with classification head showed in \citet{schick2020exploiting}.
 
@@ -180,6 +203,7 @@ Fig~\ref{tab:multi-use-logits-summary}
 \newpage
 \appendix
 
+
 \section{Appendices}
 \label{sec:appendix}
 
@@ -193,7 +217,6 @@ In order to simulate larger batch sizes we accumulated gradients for 8 steps to 
 Learning rate was chosen to be 1e-5, we trained each model for 3 epochs on the whole train set.
 Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1e-8.
 
-
 \subsection{Patterns}
 \label{apx:patterns}
 
@@ -201,12 +224,9 @@ Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1
 \label{apx:full-results-report}
 The exact score for each single experiment is describe in and Table~\ref{tab:single-on-train-set} and Table~\ref{tab:multi-use-logits-full}.
 \input{multi-use-logits-full}
-\input{single-on-train-set}
-
-
-
-
-
+%\input{single-on-train-set}
+\input{single-on-train-set-horizontal}
+%\includegraphics{single-on-train-set-horizontal copy}
 
 
 \end{document}
