@@ -86,7 +86,7 @@ Finally, I will test these questions in few-shot setting using PET pipeline.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{mlm_classification}
-	\caption{Classification via prompting MLM with PVP}
+	\caption{Classification using cloze test.}
 	\label{normal_case}
 \end{figure}
 
@@ -171,7 +171,7 @@ By doing this, the difference between the reported scores of the fine-tuned mode
 
 \subsection{Results}
 \noindent\textbf{Single-task Training}\quad
-
+\input{multi-on-train-set-summary}
 As a first experimental step, in order to see how our model performs on each task separatly, I trained and evaluated the method on a single task.
 All models were trained in supervised manner for the different classification tasks in the same method described in Section~\ref{sec:method}, that is, using PVPs and language modeling head instead of a classification head.
 The performance of the supervised training using PVPs succeed to match the results with classification head showed in \citet{schick2020exploiting}.
@@ -206,7 +206,6 @@ The performance of the multi-task model without the "bad" PVPs is also very clos
 
 \vspace{8pt}
 \noindent\textbf{Multi-Task Training}\quad
-\input{multi-on-train-set-summary}
 To test how training on multi-task will generalize to unseen tasks, I combined the training set of multiple tasks and trained a model all of them together.
 Each time I omitted one task from the training tasks and fit a model on all the others.
 The missing task was the one that I aimed to generalize to.
@@ -227,8 +226,8 @@ I think this adjustment can improve generalization performance a lot.
 
 
 \vspace{8pt}
-\noindent\textbf{PET Multi-Task Training}\quad
 \input{multi-use-logits-summary}
+\noindent\textbf{PET Multi-Task Training}\quad
 In \citet{schick2020exploiting}, the authors presented a method for training in few-shot regime called PET.
 As reported in the paper, their method outperformed other supervised baselines.
 
