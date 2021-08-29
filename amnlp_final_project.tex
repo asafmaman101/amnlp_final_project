@@ -54,7 +54,7 @@ The restructured sequence and the tokens corresponding to each class label are c
 Evaluating predictions this way enables us to use one language modeling head for multiple tasks with no need to initialize and train task specific weights.
 In order to learn new task, the only change that needs to be done is chosing PVP for the new task. 
 Multi-tasking training raises several question that I aim to answer in this project.
-I found evidences that training models for multi-tasking, when done write, can be used without harming each task's performance.
+I found evidences that training models for multi-tasking, when done right, can be used without harming each task's performance.
 In addition, when training on semantically similar tasks, multi-task training can, to some extent, generalize to unseen tasks.
 \end{abstract}
 
@@ -62,36 +62,35 @@ In addition, when training on semantically similar tasks, multi-task training ca
 \section{Introduction}
 
 When handling classification tasks, the common method is to fine-tune the model together with a task-specific classification head.
-Recenly, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta}, utilizing the knowledge attained from pre-training via prompting has become feasible.
-Providing task description together with examples has proved to be useful \citep{radford2019language} even for zero-shot and few-shot inference.
-This also envailed an alternative way to deal with classification tasks: reformulating the input examples as cloze-style phrases.
+Recenly, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta} started being prevalent, utilizing the knowledge attained from pre-training via prompting has become feasible.
+
+Providing task description together with examples has proved to be successful \citep{radford2019language} even for zero-shot and few-shot learning.
+This approach unveils an alternative way to deal with classification tasks: reformulating the input examples as cloze-style phrases.
 Each example is plugged into a fixed sentence structure, called \textit{pattern}, containing exactly one mask token.
-The prediction is then determined according to scores the model assigns to a subset of tokens, called \textit{verbalizers}, each associated with one of the classes.
-This mechanism reveals a few adventages over conventional classification methods.
+The prediction is then determined according to the scores the model assigns to a subset of tokens, called \textit{verbalizers}, each associated with one of the classes.
+This mechanism delivers a few adventages over conventional classification methods.
 
 First, as mentioned before, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (a.k.a. PVP).
 This way the model gets information about the task and may be able to infer it from the PVP.
 This can enable the model to adopt itself to new tasks without a need for large batch of new-task examples.
 Another advantage is that training one language modeling head can be used for multiple tasks at once, without a need to train separate model for each.
-Finally, making decisions using MLM predictions leverages the language modeling knowledge attained during pre-training and use it for classification.
+Finally, making decisions using MLM predictions leverages the language modeling knowledge attained during pre-training and use it for the downstream task.
 
 In this project I would like to investigate how masked language models (MLMs) performance are effected when trained on multiple classification tasks.
 In addition, I would like to examine whether providing task description in the form of PVP can help MLMs generalize to \textit{unseen tasks}.
 Finally, I will test these questions in few-shot setting using PET pipeline.
 
-% SINGLE TASK TRAINING ON TRAIN SET SUMMARY TABLE
-\input{single-on-train-set-summary}
-
 \section{Method}
+\label{sec:method}
 
-\begin{figure}[b]
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{mlm_classification}
 	\caption{Classification via prompting MLM with PVP}
 	\label{normal_case}
 \end{figure}
 
-In general, using \textit{pattern-verbalizer pair} (PVP) can be formalized as follows: for a given masked language model $M$, vocabulary $V$ and set of labels $\mathcal{L}$, we define a pattern $P(\textbf{\text{x}})$ that takes as input the raw sample $\textbf{x}\in{}V^*$ and outputs a phrase $P(\textbf{x})\in{}V^*$ that contains exactly one mask token.
+In general, the use of \textit{pattern-verbalizer pair} (PVP) can be formalized as follows: for a given masked language model $M$, vocabulary $V$ and set of labels $\mathcal{L}$, we define a pattern $P(\textbf{\text{x}})$ that takes as input the raw sample $\textbf{x}\in{}V^*$ and outputs a phrase $P(\textbf{x})\in{}V^*$ that contains exactly one mask token.
 For each label in $\mathcal{L}$ we define the set of \textit{verbalizers} using the function $v:\mathcal{L}\rightarrow{}V$ that maps each label to a corresponding token.
 
 We will apply the pattern $P(\textbf{x})$ on each input $\textbf{x}$ that we wish to evaluate.
@@ -110,7 +109,10 @@ We manually choose three PVPs for each task in a set of tasks $\{A_1, A_2, \dots
 
 \section{Datasets}
 
-I chose the following datasets to evaluate performence on.
+The following datasets were chosen to examine the questions raised above.
+Some datasets are semantically close, others are completely different.
+This was done intentially to test how the difference between the tasks will influence the ability to generalize. 
+Some datasets were also picked from \citet{schick2020exploiting} to control performance on the different tasks.
 
 \vspace{8pt}
 \noindent \textbf{AG's News} \quad
@@ -219,7 +221,7 @@ For each task, I used 1000 examples from each task to train ensemble of models.
 I then used a soft-labeled dataset of size 20K to train one classifier, but here, differently from \citet{schick2020exploiting}, I used PVPs also for the classifier.
 That is, instead of training classifier with classification head for a specific task, I used different PVP for each task.
 
-The results are mixed, when omitting AG News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned in \todo{(reference)}).
+The results are mixed, when omitting AG's News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned in \todo{(reference)}).
 For Yelp Full and MNLI, the model fails to perform without seeing the task.
 On the other hand, the lack in performance does not seem to stem from the small amount of example.
 This can be seen when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary}.
@@ -240,6 +242,7 @@ This result is not suprising and mostly follows the results revealed in \citet{s
 \label{sec:appendix}
 
 \subsection{Implementation Details}
+\label{apx:implementation-details}
 The following hyper parameters were chosen for the experiments in Section~\ref{sec:experiments}.
 I chose the RobertaLarge as the model to be used across all experiments.
 This choice was done in order to be able to compare results with \citet{schick2020exploiting}.
