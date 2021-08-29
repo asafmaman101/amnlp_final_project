@@ -150,40 +150,59 @@ The patterns for each task are presented in Appendix~\ref{apx:patterns}.
 \section{Experiments}
 \label{sec:experiments}
 
-I conducted several experiments to test the questions raised above.
-For each task, a set of PVPs was manually chosen, the PVP where taken from \citet{schick2020exploiting} for tasks that appear in their work.
-For the additional tasks, the PVPs were chosen manually by human common sense. 
+% SINGLE TASK TRAINING ON TRAIN SET SUMMARY TABLE
+\input{single-on-train-set-summary}
 
-Each setting that will be described below was trained and evaluated on each PVP separatly.
-To provide further analysis and possibly more insights about the behavior of the method, I evaluated each model not only on the PVP that it was trained on.
+I conducted several experiments to test the questions raised above.
+In this section I will describe three setups, each consists of up to 18 models evaluated on all possible PVPs of the chosen tasks resulting with 324 scores summarized and presented in Tables~\ref{tab:single-on-train-set-summary},~\ref{tab:multi-on-train-set-summary} and \ref{tab:multi-use-logits-summary}.
 
 \subsection{Experimental Setup}
 \label{sub-sec:experimental-setup}
+For each task, a set of PVPs was manually chosen, the PVPs where taken from \citet{schick2020exploiting} for tasks that also appear in their work.
+For the additional tasks, the PVPs were chosen manually designed according to human understanding of the task. 
 
-All the additional implementation details and code can be found in this github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
+To provide further analysis and possibly more insights about the behavior of the method, I evaluated each model not only on the PVP that it was trained on but on all three possible PVPs of the evaluated task.
+
+Additional implementation details can be found in Appendix~\ref{apx:implementation-details} and code can be found in the github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
 
 \subsection{Unsupervised Baselines}
-To see how the fine-tuning influences each tasks performance, I evaluated as baseline the zero-shot performance of the pre-trained model with each PVP.
+In order to see how the fine-tuning influenced each task's performance, I evaluated as baseline the zero-shot performance of the pre-trained model with each PVP.
+By doing this, the difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
 
 \subsection{Results}
-
 \noindent\textbf{Single-task Training}\quad
-Firsly, to see how our model perform on each task separatly, I trained and evaluated on single task.
-The performance of supervised training using PVPs succeed to match the matching results with classification head showed in \citet{schick2020exploiting}.
 
-In addition, when evaluating models trained on single task on different tasks, few of them showed improvement meaning some sense of generalization.
-In contrast, there was pairs of tasks that training on one deteriorated the performance on another.
+As a first experimental step, in order to see how our model performs on each task separatly, I trained and evaluated the method on a single task.
+All models were trained in supervised manner for the different classification tasks in the same method described in Section~\ref{sec:method}, that is, using PVPs and language modeling head instead of a classification head.
+The performance of the supervised training using PVPs succeed to match the results with classification head showed in \citet{schick2020exploiting}.
+
+In addition, when evaluating single-task models on different tasks, few of them showed improvement over the unsupervised baseline~---~meaning some sense of generalization.
+In contrast, there were pairs of tasks that training on one deteriorated the performance on another.
 The results for this experiments are reported in Table~\ref{tab:single-on-train-set-summary}.
 Extended report can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}.
 
-One can notice that training on AGnews and Yahoo! increased the performance when evaluating on the other task, compared to the unsupervised baseline.
+One can notice that training on AG's News and Yahoo! increased the performance when evaluating on the other task, compared to the unsupervised baseline.
 An important artifact regarding this pair of datasets is that although their distribution is different and the set of classes is different, they share two class labels that take part in both: Sports and Business.
 Our method does facilitate classifing while being agnostic to the number of classes.
-However, in this pair of tasks we cannot still conclude the model learned to generalize to unseen tasks, because they are essentially too close one to another.
+However, in this pair of tasks we cannot really conclude the model learned to generalize to unseen tasks, because they are essentially too close one to another.
 
-For some tasks, the performance of different PVPs performed very differently.
-For example how QQP performed on Yelp Polarity task, when looking on the extended results (that can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report} we can see that two of the PVPs scored roughly 88\% but one PVP got ~49\%.
-This emphesises the importance of PVP choice for generalization.
+To overcome this issue, I decided to add paraphrase detection to the set of tasks and evaluate it using QQP dataset.
+This choice was made because paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
+This makes this two tasks basically different but share some semantic characteristics. 
+An interesting observation in this setup is the performance of the model trained on MNLI when evaluating on QQP.
+The average score recieved is 77.9\%, which is 34\% more than the baseline on this task.
+In addition, the model that was trained on QQP achieved 85.9\%, meaning that testing MNLI model on QQP got only 8\% less then the model that was fine-tuned on this task.
+Although this is still far from concluding that the model infered the task from the description, such results without seeing samples from that distribution and training on different task is significant in my opinion.
+
+For some tasks, training and evaluating using different PVPs performed very differently.
+For example how QQP performed on Yelp Polarity task, when looking on the extended results (that can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}), we can see that two of the PVPs scored roughly 88\% but one PVP got ~49\%.
+This emphesises the importance of PVP choice for generalization and happened with several pairs of tasks.
+
+Another observation is that when training on all tasks together, the model achieves slightly the same results on each task as if it was fine-tuned to this task specificlly.
+On most tasks, the multi-task training deteriorated score by roughly 0.5-1.0\% per task.
+The only exception is when evaluating on MNLI and QQP where the average is low, but one can notice that the variance is high and that the low average is a result of one low performing PVP.
+Excluding "bad" PVPs, by using validation set for example, can prevent these cases.
+The performance of the multi-task model without the "bad" PVPs is also very close to the single-task performance.
 
 \vspace{8pt}
 \noindent\textbf{Multi-Task Training}\quad
