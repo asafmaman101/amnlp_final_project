@@ -13,6 +13,7 @@
 \usepackage{float}
 \usepackage{lscape}
 \usepackage{rotating}
+\usepackage{tabularx}
 %\usepackage{geometry}
 %\usepackage{pdfpages}
 \graphicspath{ {./figs/} }
@@ -250,6 +251,79 @@ Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1
 
 \subsection{Patterns}
 \label{apx:patterns}
+I chose the following datasets to evaluate performence on.
+
+\vspace{8pt}
+\noindent \textbf{AG's News} \quad
+Each sample $\textbf{x}$ in the dataset consists of title and text body.
+That is $\textbf{x}=(a, b)$ where $a$ and $b$ represents the title and text body respectively.
+For the experiments, I used the following three patterns:
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabularx}{\textwidth}{cc}
+		 $P_1(x)=$ \_\_\_\_: $a$ $b$ & $P_2(x)=$ \_\_\_\_ News: $a$ $b$ \\
+		 $P_3(x)=$ $a$ (\_\_\_\_) $b$ &  \\
+	\end{tabularx}
+\end{table}
+The verbalizers used for each class were World, Sports, Business and Tech corresponding to the dataset categories.
+
+\vspace{8pt}
+\noindent \textbf{Yahoo} \quad
+Each sample $\textbf{x}$ in the dataset consists of question and answer.
+That is $\textbf{x}=(a, b)$ where $a$ and $b$ represents the question and answer respectively.
+For the experiments, I used the following three patterns:
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabularx}{\textwidth}{cc}
+		$P_1(x)=$ \_\_\_\_: $a$ $b$ & $P_2(x)=$ \_\_\_\_ Question: $a$ $b$ \\
+		$P_3(x)=$ $a$ (\_\_\_\_) $b$ &  \\
+	\end{tabularx}
+\end{table}
+The verbalizers used for each class were "Society", "Science", "Health", "Education", "Computer", "Sports", "Business", "Entertainment", "Relationship" and "Politics", corresponding to the dataset categories.
+
+\vspace{8pt}
+\noindent \textbf{Yelp} \quad
+Each sample $\textbf{x}$ in the dataset consists of a review $a$.
+For the experiments, I used the following three patterns:
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabularx}{\textwidth}{l}
+		$P_1(x)=$It was \_\_\_\_. $a$ \\
+		$P_2(x)=$ $a$. All i n all, it was \_\_\_\_. \\
+		$P_3(x)=$ Just \_\_\_\_! $a$  \\
+	\end{tabularx}
+\end{table}
+The Yelp Full and Yelp Polarity were differentiated by the verbalizers used in each task.
+For Yelp Full, the 1-5 rating scale was affiliated with "terrible", "bad", "okay", "good", "great" verbalizers.
+Yelp Polarity was flatten to "bad" and "good" only.
+
+\vspace{8pt}
+\noindent \textbf{MNLI} \quad
+Each sample $\textbf{x}$ in the dataset consists of two sentences $a$ and $b$.
+The three patterns used for the experiments were:
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabularx}{\textwidth}{cc}
+		$P_1(x)=$"$a$"? \_\_\_\_, "$b$" & $P_2(x)=$$a$? \_\_\_\_, $b$ \\
+		$P_3(x)=$"$a$"? \_\_\_\_, "$b$" & \\
+	\end{tabularx}
+\end{table}
+And the verbalizers used for each were "Wrong", "Right" and "Maybe" for Contradiction, Entailment and Natural classes respectively.
+$P_3$ differs from $P_1$ by its verbalizers, it was used with "No", "Yes" and "Maybe" instead.
+
+\vspace{8pt}
+\noindent \textbf{Quora Question Pairs} \quad
+Each sample $\textbf{x}$ in the dataset consists of two sentences $a$ and $b$.
+The three patterns used for the experiments were:
+\begin{table}[H]
+	\renewcommand{\arraystretch}{1.5}
+	\begin{tabularx}{\textwidth}{cc}
+		$P_1(x)=$"$a$"? \_\_\_\_, "$b$" & $P_2(x)=$$a$? \_\_\_\_, $b$ \\ 
+		$P_3(x)=$"$a$"? \_\_\_\_, "$b$" & \\
+	\end{tabularx}
+\end{table}
+And the verbalizers used for each were "Wrong" and "Right" for sentences that are not paraphrases and are paraphrases respectively.
+$P_3$ differs from $P_1$ by its verbalizers, it was used with "No" and "Yes" instead.
 
 \subsection{Full Results Report}
 \label{apx:full-results-report}
