@@ -111,7 +111,7 @@ We manually choose three PVPs for each task in a set of tasks $\{A_1, A_2, \dots
 
 The following datasets were chosen to examine the questions raised above.
 Some datasets are semantically close, others are completely different.
-This was done intentially to test how the difference between the tasks will influence the ability to generalize. 
+Datasets were picked this way intentially to test how the difference between the tasks will influence the ability to generalize. 
 Some datasets were also picked from \citet{schick2020exploiting} to control performance on the different tasks.
 
 \vspace{8pt}
@@ -211,17 +211,19 @@ Each time I omitted one task from the training tasks and fit a model on all the 
 The missing task was the one that I aimed to generalize to.
 I evaluated all models on each task separatly, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
 
-When omitting agnews, the model succeeded to get 82.0\% accuracy, that is and improvement over the baseline.
+When omitting AG's News, the model succeeded to get 82.0\% accuracy, that is an improvement over the baseline.
 This means that training on the other tasks benefits with this task and in fact generalizes.
-Although, when comparing this score to the single task traing we can see almost the same result when evalutaing a model that was trained on yahoo to agnews.
-This points out on the fact that most of the knowledge learned in training got from the Yahoo task and not from the remaining tasks.
-Here is worth mentioning that both yahoo
+Although, when comparing this score with the single task traing we can see almost the same result (81.7\%) when evalutaing a model that was trained on Yahoo! to AG's News.
+This implies that most of the knowledge learned in training got from the Yahoo! task and not from the remaining tasks.
+The similarity artifacts between AG's News and Yahoo! are relevant in this setup as well.
+Hence, one must observe other tasks to test generalization capabilities.
+On the two other tasks, Yelp Full and MNLI, we notice that the scores of the model trained on all other tasks are worse than the baseline model.
 
 To some extent, training a model for multi-tasks benefits with performance on unseen tasks.
-It still seem that the ability of the model to infer the task according to the PVP is limited to semantically close tasks.
+However, it still seem that the ability of the model to infer the task according to the PVP is limited to semantically-close tasks.
 While from the results I didn't observe option to train a model that generalize to any task, regardless of the tasks it was trained on, I think that this limitation is somewhat expected.
-Moreover, as PVP is the key for the model to infer the task, its choice might be crucial for success in generalizing to unseen tasks.
-Therefore, one might suggest better ways to generate PVP in place of manually choosing them.
+Moreover, as the chosen PVP is the key for the model to infer the task, its choice might be crucial for success in generalizing to unseen tasks.
+Therefore, one might suggest better ways to generate PVPs in place of manually choosing them.
 I think this adjustment can improve generalization performance a lot.
 
 
