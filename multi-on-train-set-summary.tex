@@ -2,16 +2,16 @@
 	\centering
 	\fontsize{9}{13}
 	\selectfont
-	% \begin{tabularx}{\linewidth}{lcccccc}
-	\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}cccccc}
+	\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}ccccccc}
 		\toprule
-		& \textbf{wo/agnews} & \textbf{wo/yahoo} & \textbf{wo/yelp-full} & \textbf{wo/mnli} & \textbf{all} & \textbf{unsup} \\
+		& \textbf{wo/AG's News} & \textbf{wo/Yahoo!} & \textbf{wo/Yelp Full} & \textbf{wo/MNLI} & \textbf{wo/QQP} & \textbf{All} & \textbf{unsup} \\
 		\hline
-		\textbf{agnews}    & 82.0 \tiny$\pm$0.25        & 93.6 \tiny$\pm$0.23        & 93.4   \tiny$\pm$0.16          & 93.4 \tiny$\pm$0.27       & 92.6 \tiny$\pm$0.45 & 66.7 \tiny$\pm$7.55 \\
-		\textbf{yahoo}     & 75.3 \tiny$\pm$0.23        & 51.8 \tiny$\pm$2.50        & 75.1   \tiny$\pm$0.25          & 75.1 \tiny$\pm$0.12       & 74.1 \tiny$\pm$ 0.68  & 43.2 \tiny$\pm$7.66 \\
-		\textbf{yelp-full} & 67.9 \tiny$\pm$0.43        & 67.9 \tiny$\pm$0.54        & 30.5   \tiny$\pm$8.51          & 68.1 \tiny$\pm$0.15       & 66.6 \tiny$\pm$ 1.58 & 33.5 \tiny$\pm$11.6 \\
-		\textbf{mnli}      & 88.2 \tiny$\pm$0.09        & 88.1 \tiny$\pm$0.37        & 85.2   \tiny$\pm$4.37          & 35.3 \tiny$\pm$0.88      & 75.6 \tiny$\pm$ 16.3 & 38.4 \tiny$\pm$4.34 \\
+		\textbf{AG's News}    & 82.0 \tiny$\pm$0.25        & 93.6 \tiny$\pm$0.23        & 93.4   \tiny$\pm$0.16          & 93.4 \tiny$\pm$0.27       & 92.8 \tiny$\pm$ 0.85 & 92.6 \tiny$\pm$0.45 & 66.7 \tiny$\pm$7.55 \\
+		\textbf{Yahoo!}     & 75.3 \tiny$\pm$0.23        & 51.8 \tiny$\pm$2.50        & 75.1   \tiny$\pm$0.25          & 75.1 \tiny$\pm$0.12       & 75.1 \tiny$\pm$0.26 & 74.1 \tiny$\pm$ 0.68  & 43.2 \tiny$\pm$7.66 \\
+		\textbf{Yelp Full} & 67.9 \tiny$\pm$0.43        & 67.9 \tiny$\pm$0.54        & 30.5   \tiny$\pm$8.51          & 68.1 \tiny$\pm$0.15       & 68.1 \tiny$\pm$ 0.37 & 66.6 \tiny$\pm$ 1.58 & 33.5 \tiny$\pm$11.6 \\
+		\textbf{MNLI}      & 88.2 \tiny$\pm$0.09        & 88.1 \tiny$\pm$0.37        & 85.2   \tiny$\pm$4.37          & 35.3 \tiny$\pm$0.88      & 88.1\tiny$\pm$ 0.22  & 75.6 \tiny$\pm$ 16.3 & 38.4 \tiny$\pm$4.34 \\
+		\textbf{QQP}      &  \tiny$\pm$        &  \tiny$\pm$        &    \tiny$\pm$          &  \tiny$\pm$      & 76.9\tiny$\pm$ 0.52  & 68.2 \tiny$\pm$ 27.6 & 43.87 \tiny$\pm$9.57\\
 		\bottomrule
 	\end{tabular*}
-	\caption{\textbf{Multi-task training performence on all tasks}~---~results of models trained on all tasks exept one. Reported accuracy results are averaged over all three possible patterns with standard deviation reported aside. Omitting different training tasks are arranged in columns (\textit{i.e.} "wo/agnews" means training on all tasks \textbf{except} agnews) and evaluation tasks in rows.}\label{tab:multi-on-train-set-summary}
+	\caption{\textbf{Multi-task training performence on all tasks}~---~results of models trained on all tasks exept one. Reported accuracy results are averaged over all three possible patterns with standard deviation reported aside. Omitting different training tasks are arranged in columns (\textit{i.e.} "wo/AG's News" means training on all tasks \textbf{except} agnews) and evaluation tasks in rows.}\label{tab:multi-on-train-set-summary}
 \end{table*}
