@@ -50,31 +50,33 @@
 \begin{abstract}
 In recent years, appearance of large language models paved the way to calculate predictions via prompts.
 One key feature of this mechanism is the ability to provide information about the task.
-One prompting approach is reformulating inputs as cloze-style phrases and deriving predictions accorting the the probabilites the model assigns.
-The restructured sequence and the tokens corresponding to each class label are called patten-verbalizer pair (PVP) and are used as task description.
-Evaluating predictions this way enables us to use one language modeling head for multiple tasks with no need to initialize and train task specific weights.
-In order to learn new task, the only change that needs to be done is chosing PVP for the new task. 
-Multi-tasking training raises several question that I aim to answer in this project.
+One prompting approach is reformulating inputs as cloze-style phrases and deriving predictions according to the probabilites the model assigns.
+The restructured sequence and the tokens corresponding to each class label are called \textit{patten-verbalizer pair} (PVP) and are used as task description.
+Evaluating predictions this way enables the use of one language modeling head for multiple tasks with no need to initialize and train task-specific weights.
+In order to learn a new task, the only change that needs to be done is chosing PVP for the new task. 
+Multi-tasking training in this regime raises several question that I aim to answer in this project.
 I found evidences that training models for multi-tasking, when done right, can be used without harming each task's performance.
-In addition, when training on semantically similar tasks, multi-task training can, to some extent, generalize to unseen tasks.
+Furthermore, when training on semantically similar tasks, multi-task training can, to some extent, generalize to unseen tasks.
 \end{abstract}
 
 
 \section{Introduction}
 
 When handling classification tasks, the common method is to fine-tune the model together with a task-specific classification head.
-Recenly, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta} started being prevalent, utilizing the knowledge attained from pre-training via prompting has become feasible.
+Recenly, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta} started becomming prevalent, utilizing the knowledge attained from pre-training via prompting has become feasible.
 
 Providing task description together with examples has proved to be successful \citep{radford2019language} even for zero-shot and few-shot learning.
 This approach unveils an alternative way to deal with classification tasks: reformulating the input examples as cloze-style phrases.
-Each example is plugged into a fixed sentence structure, called \textit{pattern}, containing exactly one mask token.
+Each example is plugged into a fixed sentence structure, called \textit{pattern}, containing \textit{exactly} one mask token.
 The prediction is then determined according to the scores the model assigns to a subset of tokens, called \textit{verbalizers}, each associated with one of the classes.
-This mechanism delivers a few adventages over conventional classification methods.
+The model will assign a given input to the class whose verbalizer received the highest schore.
+This method is presented visually in Figure~\ref{fig:method}.
 
+This mechanism delivers a few adventages over conventional classification methods.
 First, as mentioned before, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (a.k.a. PVP).
 This way the model gets information about the task and may be able to infer it from the PVP.
-This can enable the model to adopt itself to new tasks without a need for large batch of new-task examples.
-Another advantage is that training one language modeling head can be used for multiple tasks at once, without a need to train separate model for each.
+This can allow the model to adapt itself to new tasks without a need for large amount of new-task examples.
+Another advantage is that training one language modeling head can be used for multiple tasks at once, without a need to train a separate model for each.
 Finally, making decisions using MLM predictions leverages the language modeling knowledge attained during pre-training and use it for the downstream task.
 
 In this project I would like to investigate how masked language models (MLMs) performance are effected when trained on multiple classification tasks.
@@ -87,26 +89,22 @@ Finally, I will test these questions in few-shot setting using PET pipeline.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{mlm_classification}
-	\caption{Classification using cloze test.}
-	\label{normal_case}
+	\caption{Classification using cloze test~---~reformulating the sample as a new phrase with exactly one mask token. Then using the scores the language model assigns to the mask token and picking the class with the highest score.}
+	\label{fig:method}
 \end{figure}
 
 In general, the use of \textit{pattern-verbalizer pair} (PVP) can be formalized as follows: for a given masked language model $M$, vocabulary $V$ and set of labels $\mathcal{L}$, we define a pattern $P(\textbf{\text{x}})$ that takes as input the raw sample $\textbf{x}\in{}V^*$ and outputs a phrase $P(\textbf{x})\in{}V^*$ that contains exactly one mask token.
 For each label in $\mathcal{L}$ we define the set of \textit{verbalizers} using the function $v:\mathcal{L}\rightarrow{}V$ that maps each label to a corresponding token.
 
 We will apply the pattern $P(\textbf{x})$ on each input $\textbf{x}$ that we wish to evaluate.
-Then we will use $M$ to process it and recieve the score it assigns to each token $t\in{}V$ at the masked token position.
-We denote this unnormalized score as $M(t, \textbf{s})$.
-Then we'll calculate the unnormalized score for each class label $l\in{}\mathcal{L}$, that is, $M(v(l) | P(\textbf{x}))$ and denote it by $s_{\text{\textbf{p}}}(l|\textbf{x})$ as the score our language model gives to class label $l$ providing with some PVP $\text{\textbf{p}}=(P, v)$.
+Then we will use $M$ to recieve the score it assigns to each token $t\in{}V$ at the masked token position.
+We denote this unnormalized score as $M(t\ |\ P(\textbf{x}))$.
+Then we'll calculate the unnormalized score for each class label $l\in{}\mathcal{L}$, that is, $M(v(l)\ |\ P(\textbf{x}))$ and denote it by $s_{\text{\textbf{p}}}(l\ |\ \textbf{x})$ as the score our language model gives to class label $l$ providing $\text{\textbf{p}}=(P, v)$ as the PVP.
 Finally we normalize and calculate the probability distribution over the labels using softmax:
 \[
-	q_\text{\textbf{p}}(l|\textbf{x}) = \frac{e^{s_{\text{\textbf{p}}}(l|\textbf{x})}}{\sum_{l^{'}\in{}\mathcal{L}}e^{s_{\text{\textbf{p}}}(l^{'}|\textbf{x})}}
+	q_\text{\textbf{p}}(l\ |\ \textbf{x}) = \frac{e^{s_{\text{\textbf{p}}}(l\ |\ \textbf{x})}}{\sum_{l^{'}\in{}\mathcal{L}}e^{s_{\text{\textbf{p}}}(l^{'}\ |\ \textbf{x})}}
 \]
-We then use the cross-entropy between $q_\text{\textbf{p}}(l|\textbf{x})$ and the true one-hot encoded label to calculate the loss over all examples. 
-
-We manually choose three PVPs for each task in a set of tasks $\{A_1, A_2, \dots, A_k\}$ and use them in the following experiments.
-
-
+We then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textbf{x})$ and the true one-hot encoded label to calculate the loss over all examples. 
 
 \section{Datasets}
 
