@@ -106,46 +106,6 @@ Finally we normalize and calculate the probability distribution over the labels 
 \]
 We then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textbf{x})$ and the true one-hot encoded label to calculate the loss over all examples. 
 
-\section{Datasets}
-
-The following datasets were chosen to examine the questions raised above.
-Some datasets are semantically close, others are completely different.
-Datasets were picked this way intentially to test how the difference between the tasks will influence the ability to generalize. 
-Some datasets were also picked from \citet{schick2020exploiting} to control performance on the different tasks.
-
-\vspace{8pt}
-\noindent \textbf{AG's News} \quad
-A dataset for text categorization which contains 120K train samples and 7.6K test samples.
-It contains articles formatted as title and text body.
-The task is to classify the news to four categories: (1) World, (2) Sports, (3) Business, (4) Tech.
-
-\vspace{8pt}
-\noindent \textbf{Yahoo} \quad
-Text categorization dataset. It contains 1.46M pairs of questions and answers.
-The train set contains 1.4M samples and test set 60K samples.
-The task is to classify each pair to its subject out of 10 possible options: (1) Society (2) Science (3) Health (4) Education (5) Computer (6) Sports (7) Business (8) Entertainment (9) Relationship (10) Politics.
-
-\vspace{8pt}
-\noindent \textbf{Yelp} \quad
-Yelp Reviews dataset task is to classify a review for a 5-star rating.
-It contains 650K train samples and 50K test samples.
-There is another version for that task, while the 5-star scale named "Yelp Full", the second task is to predict whether the review sentiment was positive or negative.
-The second task is named "Yelp Polarity".
-
-\vspace{8pt}
-\noindent \textbf{MNLI} \quad
-The MNLI dataset contains pairs of sentences to classify between three possible NLI labels: (1) entailment (2) natural (3) contradiction. 
-The dataset has 392K train and 9.8K test samples. 
-
-\vspace{8pt}
-\noindent \textbf{Quora Question Pairs} \quad
-QQP contains 363K train samples and 40K test samples.
-The task is to predict whether two sentences are paraphrases one of the other.
-
-\subsection{Patterns}
-The patterns for each task are presented in Appendix~\ref{apx:patterns}.
-
-
 \section{Experiments}
 \label{sec:experiments}
 
@@ -153,7 +113,11 @@ The patterns for each task are presented in Appendix~\ref{apx:patterns}.
 \input{single-on-train-set-summary}
 
 I conducted several experiments to test the questions raised above.
-In this section I will describe three setups, each consists of up to 18 models evaluated on all possible PVPs of the chosen tasks resulting with 324 scores summarized and presented in Tables~\ref{tab:single-on-train-set-summary},~\ref{tab:multi-on-train-set-summary} and \ref{tab:multi-use-logits-summary}.
+In this section I will describe three setups: single-task, multi-task and PET training.
+
+The datasets used in the following experiments are AG's News, Yahoo!, Yelp, MNLI and QQP.
+Further details about the datasets are deferred to Appendix~\ref{apx:datasets}.
+The PVPs for each task are presented in Appendix~\ref{apx:patterns}.
 
 \subsection{Experimental Setup}
 \label{sub-sec:experimental-setup}
@@ -263,6 +227,41 @@ However, the presented improvement on unseen tasks can be benificial and in my o
 
 \section{Appendices}
 \label{sec:appendix}
+
+\subsection{Datasets}
+\label{apx:datasets}
+The following datasets were chosen to examine the questions raised above.
+The consideration when picking datasets was to cover different tasks but also to have tasks that share common semantic characteristics. 
+Some datasets were also picked from \citet{schick2020exploiting} to control performance on the different tasks.
+
+\vspace{8pt}
+\noindent \textbf{AG's News} \quad
+A dataset for text categorization which contains 120K train samples and 7.6K test samples.
+It contains articles formatted as title and text body.
+The task is to classify each article to one of four categories: (1) World, (2) Sports, (3) Business, (4) Tech.
+
+\vspace{8pt}
+\noindent \textbf{Yahoo!} \quad
+Text categorization dataset. It contains 1.46M pairs of questions and answers.
+The train set contains 1.4M samples and test set 60K samples.
+The task is to classify each pair to its subject out of 10 possible options: (1) Society (2) Science (3) Health (4) Education (5) Computer (6) Sports (7) Business (8) Entertainment (9) Relationship (10) Politics.
+
+\vspace{8pt}
+\noindent \textbf{Yelp} \quad
+Yelp Reviews dataset contains 650K train samples and 50K test samples.
+There are two version of tasks for this datset.
+One, called "Yelp Full" is to classify a review for a 5-star rating.
+The other version named "Yelp Polarity" is to predict whether the review sentiment was positive or negative.
+
+\vspace{8pt}
+\noindent \textbf{MNLI} \quad
+The MNLI dataset contains pairs of sentences to classify between three possible NLI labels: (1) entailment (2) natural (3) contradiction. 
+The dataset has 392K train and 9.8K test samples.
+
+\vspace{8pt}
+\noindent \textbf{Quora Question Pairs} \quad
+QQP contains 363K train samples and 40K test samples.
+The task is to predict whether two sentences are paraphrases one of the other.
 
 \subsection{Implementation Details}
 \label{apx:implementation-details}
