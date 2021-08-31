@@ -148,6 +148,17 @@ The supervised models trained for each classification task used the same method 
 Results for this setup are reported in Table~\ref{tab:single-on-train-set-summary}.
 Extended report can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}.
 
+\subsection{Multi-task Training}
+To test how training on multi-task will generalize to unseen tasks, I combined the training set of multiple tasks and trained a model all of them together.
+Each time I omitted one task from the training tasks and fit a model on all the others.
+The missing task was the one that I aimed to generalize to.
+I evaluated all models on each task separatly, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
+
+\subsection{Few-shot Multi-task Training}
+In \citet{schick2020exploiting}, the authors presented a method for few-shot training called PET.
+As an extention for the multi-tasking training done previously in this project, I used PET to train multi-task models with few examples for each task.
+In few-shot, multi-task training can be useful for adding training samples.
+
 \section{Results}
 \subsection*{Single-task Training}
 When evaluating single-task models on a task that it wasn't trained on, some evaluations show improvement over the unsupervised baseline (\textit{i.e.} training on MNLI and testing QQP).
@@ -157,31 +168,26 @@ Not all improvements point on generalization, for example even though AG's News 
 Therefore, in this pair of tasks we cannot conclude the model learned to generalize to unseen tasks, because they are essentially too close to one another.
 
 To overcome this issue, I decided to add paraphrase detection to the set of tasks and evaluate it using QQP dataset.
-This choice was made because paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
+Paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
 This makes this two tasks basically different but share some semantic characteristics. 
 An interesting observation in this setup is the performance of the model trained on MNLI when evaluating on QQP.
 The average score recieved is 77.9\%, which is 34\% more than the baseline on this task.
 In addition, the model that was trained on QQP achieved 85.9\%, meaning that testing MNLI model on QQP got only 8\% less then the model that was fine-tuned on this task.
-Although this is still far from concluding that the model infered the task from the description, such results without seeing samples from that distribution and training on different task is significant in my opinion.
+Although this is still far from concluding that the model infered the task from the description, such results when traiing on different task and without seeing examples from the target distribution is significant in my opinion.
 
 For some tasks, training and evaluating using different PVPs performed very differently.
 For example how QQP performed on Yelp Polarity task, when looking on the extended results (that can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}), we can see that two of the PVPs scored roughly 88\% but one PVP got ~49\%.
-This emphesises the importance of PVP choice for generalization and happened with several pairs of tasks.
+This emphesises the importance of PVP choice for performance and generalization.
 
-Another observation is that when training on all tasks together, the model achieves slightly the same results on each task as if it was fine-tuned to this task specificlly.
+A last observation in this setting, is that when training on all tasks together, the model achieves slightly the same results on each task as if it was fine-tuned to this task specificlly.
 On most tasks, the multi-task training deteriorated score by roughly 0.5-1.0\% per task.
-The only exception is when evaluating on MNLI and QQP where the average is low, but one can notice that the variance is high and that the low average is a result of one low performing PVP.
+The only exception is when evaluating on MNLI and QQP where the average is low, but one can notice that the variance is high and that the low average score is a result of one low performing PVP.
 Excluding "bad" PVPs, by using validation set for example, can prevent these cases.
 The performance of the multi-task model without the "bad" PVPs is also very close to the single-task performance.
 
 \vspace{8pt}
-\noindent\textbf{Multi-Task Training}\quad
+\subsection*{Multi-task Training}
 \input{multi-on-train-set-summary}
-To test how training on multi-task will generalize to unseen tasks, I combined the training set of multiple tasks and trained a model all of them together.
-Each time I omitted one task from the training tasks and fit a model on all the others.
-The missing task was the one that I aimed to generalize to.
-I evaluated all models on each task separatly, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
-
 When omitting AG's News, the model succeeded to get 82.0\% accuracy, that is an improvement over the baseline.
 This means that training on the other tasks benefits with this task and in fact generalizes.
 Although, when comparing this score with the single task traing we can see almost the same result (81.7\%) when evalutaing a model that was trained on Yahoo! to AG's News.
@@ -196,23 +202,18 @@ While from the results I didn't observe option to train a model that generalize 
 Moreover, as the chosen PVP is the key for the model to infer the task, its choice might be crucial for success in generalizing to unseen tasks.
 Therefore, one might suggest better ways to generate PVPs in place of manually choosing them.
 I think this adjustment can improve generalization performance a lot.
-
+In \citet{schick2020exploiting}, the authors presented a method for few-shot training called PET.
+As an extention for the multi-tasking training done previously in this project, I used PET to train multi-task models with few examples for each task.
+In few-shot, multi-task training can be useful for adding training samples.
 
 \vspace{8pt}
 \input{multi-use-logits-summary}
-\noindent\textbf{PET Multi-Task Training}\quad
-In \citet{schick2020exploiting}, the authors presented a method for training in few-shot regime called PET.
-As reported in the paper, their method outperformed other supervised baselines.
-
-As an extention for the multi-tasking training done previously in this project, I used PET to train multi-task models with few examples for each task.
-I wanted to examine whether the multi-task training will improve performace while exploiting the ability to increase dataset size by taking samples from different tasks.
-
+\subsection*{Few-shot Multi-task Training}
 The results for this setup can be found in Table~\ref{tab:multi-use-logits-summary}.
-For each task, I used 1000 examples from each task to train ensemble of models.
-I then used a soft-labeled dataset of size 20K to train one classifier, but here, differently from \citet{schick2020exploiting}, I used PVPs also for the classifier.
-That is, instead of training classifier with classification head for a specific task, I used different PVP for each task.
+For each task, I used 1000 examples to train ensemble of models.
+I then used a soft-labeled dataset of size 20K to train one classifier, but here, in contrast to \citet{schick2020exploiting}, I used PVPs also for the classifier.
 
-The results are mixed, when omitting AG's News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned in \todo{(reference)}).
+The results are mixed, when omitting AG's News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned earlier in this section).
 For Yelp Full and MNLI, the model fails to perform without seeing the task.
 On the other hand, the lack in performance does not seem to stem from the small amount of example.
 This can be seen when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary}.
