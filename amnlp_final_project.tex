@@ -20,6 +20,13 @@
 \graphicspath{ {./figs/} }
 \interfootnotelinepenalty=10000
 % \captionsetup{font=small}
+\usepackage{titlesec}
+\titleformat{name=\subsection,numberless}[runin]% runin puts it in the same paragraph
+       {\normalfont\bfseries}% formatting commands to apply to the whole heading
+       {}% the label and number
+       {}% space between label/number and subsection title
+       {}% formatting commands applied just to subsection title
+       [.]% punctuation or other commands following subsection title
  
 % This is not strictly necessary, and may be commented out,
 % but it will improve the layout of the manuscript,
@@ -135,22 +142,19 @@ Additional implementation details can be found in Appendix~\ref{apx:implementati
 In order to see how the fine-tuning influenced each task's performance, I evaluated as baseline the zero-shot performance of the pre-trained model with each PVP.
 By doing this, the difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
 
-\subsection{Results}
-\noindent\textbf{Single-task Training}\quad
-\input{multi-on-train-set-summary}
-As a first experimental step, in order to see how our model performs on each task separatly, I trained and evaluated the method on a single task.
-All models were trained in supervised manner for the different classification tasks in the same method described in Section~\ref{sec:method}, that is, using PVPs and language modeling head instead of a classification head.
-The performance of the supervised training using PVPs succeed to match the results with classification head showed in \citet{schick2020exploiting}.
-
-In addition, when evaluating single-task models on different tasks, few of them showed improvement over the unsupervised baseline~---~meaning some sense of generalization.
-In contrast, there were pairs of tasks that training on one deteriorated the performance on another.
-The results for this experiments are reported in Table~\ref{tab:single-on-train-set-summary}.
+\subsection{Single-task Training}
+In order to see how different models perform on each task separatly, I trained and evaluated the method on a single task.
+The supervised models trained for each classification task used the same method as described in Section~\ref{sec:method}.
+Results for this setup are reported in Table~\ref{tab:single-on-train-set-summary}.
 Extended report can be found in Table~\ref{tab:single-on-train-set} in Appendix~\ref{apx:full-results-report}.
 
-One can notice that training on AG's News and Yahoo! increased the performance when evaluating on the other task, compared to the unsupervised baseline.
-An important artifact regarding this pair of datasets is that although their distribution is different and the set of classes is different, they share two class labels that take part in both: Sports and Business.
-Our method does facilitate classifing while being agnostic to the number of classes.
-However, in this pair of tasks we cannot really conclude the model learned to generalize to unseen tasks, because they are essentially too close one to another.
+\section{Results}
+\subsection*{Single-task Training}
+When evaluating single-task models on a task that it wasn't trained on, some evaluations show improvement over the unsupervised baseline (\textit{i.e.} training on MNLI and testing QQP).
+In contrast, there were pairs of tasks that training on one deteriorated the performance on another (for instance training on MNLI and testing on Yahoo!).
+
+Not all improvements point on generalization, for example even though AG's News and Yahoo! has different distributions and classes, there is a strong artifact in comparing them because they share two classes: Sports and Business.
+Therefore, in this pair of tasks we cannot conclude the model learned to generalize to unseen tasks, because they are essentially too close to one another.
 
 To overcome this issue, I decided to add paraphrase detection to the set of tasks and evaluate it using QQP dataset.
 This choice was made because paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
