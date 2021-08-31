@@ -136,30 +136,33 @@ To provide further analysis and possibly more insights about the behavior of the
 Additional implementation details can be found in Appendix~\ref{apx:implementation-details}.
 The code can be found in the github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
 
-\subsection{Unsupervised Baselines}
+\subsection*{Unsupervised Baselines}
 In order to see how fine-tuning affects each task's performance, I evaluated the zero-shot performance of the pre-trained model as a baseline.
 By doing this, the difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
 
-\subsection{Single-task Training}
+\subsection*{Single-task Training}
 I trained a supervised model for each classification task.
 Each model was evaluated on the task it was trained on but also on all the other tasks.
 This gives a reference for how training on one singe task benefits when switching to different task in evaluation time.
-Results for this setup are reported in Table~\ref{tab:single-on-train-set-summary}.
-Extended report can be found in Table~\ref{tab:single-on-train-set}.
 
-\subsection{Multi-task Training}
+\subsection*{Multi-task Training}
 To test whether multi-tasking will enable generalization to unseen tasks, I combined the training sets of all the datasets and trained a model omitting one task each time.
 The missing task was the one that I aimed to generalize to.
-I evaluated all models on each task separatly, the results are reported in Table~\ref{tab:multi-on-train-set-summary}.
-Extended report can be found in Table~\ref{tab:multi-on-train-set}.
+I evaluated all models on each task separatly.
 
-\subsection{Few-shot Multi-task Training}
+\subsection*{Few-shot Multi-task Training}
 In \citet{schick2020exploiting}, the authors presented a method for few-shot training called PET.
 As an extention for the multi-tasking training, I used PET to train multi-task models with few examples.
-In few-shot, multi-task training has a potential to be benificial because it allows training on more samples utilizing the data from more than one task.
-Results are reported in Table~\ref{tab:multi-use-logits-summary}.
+For each task, I used 1000 examples to train ensemble of models.
+I then used the ensemble to compute soft-labels for an unlabeled dataset of size 20K.
+Finally, I trained one classifier using the soft-labeled data.
+The two differences from \citet{schick2020exploiting} are using multiple tasks for training and using the method described in Section~\ref{sec:method} instead of a classification head for the classifier.
 
 \section{Results}
+Results for single-task training are reported in Table~\ref{tab:single-on-train-set-summary},
+multi-task training in Table~\ref{tab:multi-on-train-set-summary}
+and few-shot multi-task training in Table~\ref{tab:multi-use-logits-summary}.
+
 \subsection*{Single-task Training}
 When evaluating single-task models on a task that it wasn't trained on, some evaluations show improvement over the unsupervised baseline (\textit{i.e.} training on MNLI and testing QQP).
 In contrast, there were pairs of tasks that training on one deteriorated the performance on another (for instance training on MNLI and testing on Yahoo!).
@@ -208,8 +211,6 @@ In few-shot, multi-task training can be useful for adding training samples.
 \input{multi-use-logits-summary}
 \subsection*{Few-shot Multi-task Training}
 The results for this setup can be found in Table~\ref{tab:multi-use-logits-summary}.
-For each task, I used 1000 examples to train ensemble of models.
-I then used a soft-labeled dataset of size 20K to train one classifier, but here, in contrast to \citet{schick2020exploiting}, I used PVPs also for the classifier.
 
 The results are mixed, when omitting AG's News or Yahoo, the model succeeds to generalize at some level (Alghough, this insight is rather biased as mentioned earlier in this section).
 For Yelp Full and MNLI, the model fails to perform without seeing the task.
