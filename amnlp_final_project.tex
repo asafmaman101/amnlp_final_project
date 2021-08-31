@@ -131,15 +131,16 @@ The PVPs for each task are presented in Appendix~\ref{apx:patterns}.
 
 \subsection{Experimental Setup}
 \label{sub-sec:experimental-setup}
-For each task, a set of PVPs was manually chosen, the PVPs where taken from \citet{schick2020exploiting} for tasks that also appear in their work.
-For the additional tasks, the PVPs were chosen manually designed according to human understanding of the task. 
+For each task, a set of three PVPs was manually chosen.
+The PVPs for tasks that appear also in \citet{schick2020exploiting} where chosen to be the same as in their work.
 
 To provide further analysis and possibly more insights about the behavior of the method, I evaluated each model not only on the PVP that it was trained on but on all three possible PVPs of the evaluated task.
 
-Additional implementation details can be found in Appendix~\ref{apx:implementation-details} and code can be found in the github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
+Additional implementation details can be found in Appendix~\ref{apx:implementation-details}.
+The code can be found in the github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
 
 \subsection{Unsupervised Baselines}
-In order to see how the fine-tuning influenced each task's performance, I evaluated as baseline the zero-shot performance of the pre-trained model with each PVP.
+In order to see how the fine-tuning affected each task's performance, I evaluated the zero-shot performance of the pre-trained model as a baseline.
 By doing this, the difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
 
 \subsection{Single-task Training}
@@ -274,8 +275,8 @@ The task is to predict whether two sentences are paraphrases one of the other.
 
 \subsection{Implementation Details}
 \label{apx:implementation-details}
-The following hyper parameters were chosen for the experiments in Section~\ref{sec:experiments}.
-I chose the RobertaLarge as the model to be used across all experiments.
+The following hyperparameters were chosen for the experiments in Section~\ref{sec:experiments}.
+I chose the Roberta Large as the model to be used across all experiments.
 This choice was done in order to be able to compare results with \citet{schick2020exploiting}.
 We trained the model with a max sequence size of 256 tokens.
 The batch size was chosen so that it will fit into 11GB GPU infrastucture, this led to a batch size of 2. 
