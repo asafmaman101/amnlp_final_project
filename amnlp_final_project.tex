@@ -14,10 +14,12 @@
 \usepackage{lscape}
 \usepackage{rotating}
 \usepackage{tabularx}
+\usepackage{caption}
 %\usepackage{geometry}
 %\usepackage{pdfpages}
 \graphicspath{ {./figs/} }
 \interfootnotelinepenalty=10000
+% \captionsetup{font=small}
  
 % This is not strictly necessary, and may be commented out,
 % but it will improve the layout of the manuscript,
@@ -111,6 +113,7 @@ We then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textbf{x})$ an
 
 % SINGLE TASK TRAINING ON TRAIN SET SUMMARY TABLE
 \input{single-on-train-set-summary}
+
 
 I conducted several experiments to test the questions raised above.
 In this section I will describe three setups: single-task, multi-task and PET training.
@@ -221,7 +224,7 @@ However, the presented improvement on unseen tasks can be benificial and in my o
 \bibliography{acl2020}
 \bibliographystyle{acl_natbib}
 
-\newpage
+\clearpage
 \appendix
 
 
@@ -350,12 +353,12 @@ The three patterns used for the experiments were:
 And the verbalizers used for each were "Wrong" and "Right" for sentences that are not paraphrases and are paraphrases respectively.
 $P_3$ differs from $P_1$ by its verbalizers, it was used with "No" and "Yes" instead.
 
-\subsection{Full Results Report}
+\section{Full Results Report}
 \label{apx:full-results-report}
 The exact score for each single experiment is describe in and Table~\ref{tab:single-on-train-set} and Table~\ref{tab:multi-use-logits-full}.
+\input{single-on-train-set-horizontal}
 \input{multi-use-logits-full}
 %\input{single-on-train-set}
-\input{single-on-train-set-horizontal}
 %\includegraphics{single-on-train-set-horizontal copy}
 
 
