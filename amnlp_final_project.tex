@@ -185,7 +185,6 @@ The only exception is when evaluating on MNLI and QQP where the average is low, 
 Excluding "bad" PVPs, by using validation set for example, can prevent these cases.
 The performance of the multi-task model without the "bad" PVPs is also very close to the single-task performance.
 
-\vspace{8pt}
 \subsection*{Multi-task Training}
 \input{multi-on-train-set-summary}
 When omitting AG's News, the model succeeded to get 82.0\% accuracy, that is an improvement over the baseline.
@@ -206,7 +205,6 @@ In \citet{schick2020exploiting}, the authors presented a method for few-shot tra
 As an extention for the multi-tasking training done previously in this project, I used PET to train multi-task models with few examples for each task.
 In few-shot, multi-task training can be useful for adding training samples.
 
-\vspace{8pt}
 \input{multi-use-logits-summary}
 \subsection*{Few-shot Multi-task Training}
 The results for this setup can be found in Table~\ref{tab:multi-use-logits-summary}.
@@ -230,7 +228,7 @@ However, the presented improvement on unseen tasks can be benificial and in my o
 \bibliography{acl2020}
 \bibliographystyle{acl_natbib}
 
-\clearpage
+\newpage
 \appendix
 
 
