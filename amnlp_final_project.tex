@@ -133,7 +133,7 @@ We conducted several experiments to test the questions raised above.
 In this section we will describe three setups: Single-task, Multi-task and Few-shot Multi-task training.
 
 The datasets used in the following experiments are AG's News, Yahoo!, Yelp, MNLI and QQP.
-They were chosen such that our experiments contain variaty of tasks, some tasks share semantic properties.
+The consideration when picking datasets was to cover a variety of tasks: text categorization, sentiment analysis, NLI and paraphrase detection.
 Further details about the datasets are deferred to Appendix~\ref{apx:datasets}.
 
 For each task, a set of three PVPs was manually chosen.
@@ -172,28 +172,27 @@ multi-task training in Table~\ref{tab:multi-on-train-set-summary}
 and few-shot multi-task training in Table~\ref{tab:multi-use-logits-summary}.
 
 \subsection{Single-task Training}
-First, when training and evaluating on the same task, the performance succeeds in matching the results with a classification head showed in \citet{schick2020exploiting}.
+First, when training and evaluating on the same task, the models gain reasonable performance compared to standard benchmarks.
 When evaluating single-task models on tasks different from what they were trained on, the results are mixed.
 Some evaluations show improvement over the unsupervised baseline (\textit{i.e.} training on MNLI and testing on QQP)
 while some reduced performance (for instance, training on MNLI and testing on Yahoo!).
 
 \subtitle{AG's News on Yahoo!}
-Improvement in score does not directly imply generalization.
-For example, even though AG's News and Yahoo! have different distributions and classes, there is an artifact to consider when comparing them~---~they share two classes in common: Sports and Business.
+The scores on one of these tasks improved after training on the other.
+However, this does not directly imply generalization.
+Even though AG's News and Yahoo! have different distributions and classes, there is an artifact to consider when comparing them~---~they share two classes in common: Sports and Business.
 Therefore, we cannot conclude that the model learned to generalize to unseen tasks.
 This result can be seen more as domain adaptation than a task generalization.
 
 \subtitle{MNLI on QQP}
-To overcome this issue, we added paraphrase detection to the set of tasks and evaluated it using QQP dataset.
+We added paraphrase detection to the set of tasks and evaluated it using QQP dataset.
 Paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
 Although these two tasks share some semantic characteristics, they do not share labels and the task itself is different.
 
 The performance of the model trained on MNLI when evaluating on QQP shows an average score of 77.9\%,
-which is 34\% more than the baseline on this task.
+34\% more than the baseline on this task.
 In addition, the model that was trained on QQP achieved 85.9\%,
 meaning that testing the MNLI model on QQP got only 8\% less than the model that was fine-tuned on this task.
-Although this is still far from concluding that the model inferred the task from the description,
-such results when training on a different task and without seeing examples from the target distribution is significant, in our opinion.
 While this is still far from concluding that the model is inferring tasks from the description, we believe that such results are meaningful considering the models were trained on clearly different tasks without seeing examples from the target distribution.
 
 \subtitle{PVP Variance}
@@ -234,15 +233,14 @@ However, it still seems that the model's ability to infer the task from PVP is l
 Although the models failed to generalize to any particular task in the experiments, this limitation is somewhat expected.
 
 \subsection{Few-shot Multi-task Training}
-Due to limitations of resources, in this setup, we limited experiments to four tasks.
-Like in the previous setups, the results here are also mixed.
-One can observe similar relationships between the tasks.
+In this setup, we limited experiments to four tasks due to limited resources.
+As in the previous experiment, here too there are mixed results, but similar relationships exist between the tasks.
 
-As in the previous setup, training on AG's News or Yahoo, the model succeeds in generalizing at some level to the second task.
-Moreover, for Yelp Full and MNLI, the model fails to perform without seeing the task at train time.
+When omitting AG's news for example, the model improves over the baseline.
+However, for Yelp Full and MNLI, the model fails to perform without seeing the task at train time.
 
 On the other hand, when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary},
-the low performance does not seem to stem from the small amount of examples.
+the low performance does not seem to stem from the small number of train examples.
 Moreover, in comparison to supervised results, PET performs only slightly worse.
 This result is not surprising and mostly follows the results revealed in \citet{schick2020exploiting}, but testing it here shows that it can also get the benefits of multi-tasking using the method suggested in this work.
 
