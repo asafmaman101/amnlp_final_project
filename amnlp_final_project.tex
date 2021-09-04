@@ -76,7 +76,7 @@ Furthermore, when training on semantically similar tasks, multi-task training ca
 \section{Introduction}
 When handling classification tasks, the standard method is to fine-tune the model with a task-specific classification head.
 Recently, when large pre-trained language models such as GPT \citep{radford2018improving}, BERT \citep{devlin2019bert} and RoBERTa \citep{liu2019roberta} started becoming prevalent, utilizing the knowledge attained from pre-training via prompting has become feasible.
-Providing a task description together with examples has proven successful \citep{radford2019language} also for zero-shot and few-shot learning, which requires an understanding of the task.
+Providing a task description together with examples has proven successful \citep{radford2019language} also for zero-shot and few-shot learning, which requires some understanding of the task.
 
 This approach unveils an alternative way to deal with classification tasks: reformulating the input examples as cloze-style phrases.
 Each example is plugged into a fixed sentence structure, called \textit{pattern}, containing \textit{exactly} one mask token.
@@ -117,11 +117,11 @@ We will apply the pattern $P(\textbf{x})$ on each input $\textbf{x}$ that we wis
 Then we will use $M$ to receive the score it assigns to each token $t\in{}V$ at the masked token position.
 We denote this unnormalized score as $M(t\ |\ P(\textbf{x}))$.
 Then we'll calculate the unnormalized score for each class label $l\in{}\mathcal{L}$, that is, $M(v(l)\ |\ P(\textbf{x}))$ and denote it by $s_{\text{\textbf{p}}}(l\ |\ \textbf{x})$ as the score our language model gives to class label $l$ providing $\text{\textbf{p}}=(P, v)$ as the PVP.
-Finally, we normalize and calculate the probability distribution over the labels using softmax:
+We normalize and calculate the probability distribution over the labels using softmax:
 \[
 	q_\text{\textbf{p}}(l\ |\ \textbf{x}) = \frac{e^{s_{\text{\textbf{p}}}(l\ |\ \textbf{x})}}{\sum_{l^{'}\in{}\mathcal{L}}e^{s_{\text{\textbf{p}}}(l^{'}\ |\ \textbf{x})}}
 \]
-We then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textbf{x})$ and the true one-hot encoded label to calculate the loss over all examples. 
+Finally, we then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textbf{x})$ and the true one-hot encoded label to calculate the loss over all examples. 
 
 \section{Experimental Setup}
 \label{sec:experiments}
@@ -137,9 +137,8 @@ The consideration when picking datasets was to cover a variety of tasks: text ca
 Further details about the datasets are deferred to Appendix~\ref{apx:datasets}.
 
 For each task, a set of three PVPs was manually chosen.
-The PVPs for tasks that appear also in \citet{schick2020exploiting} where chosen to be the same as in their work.
+% The PVPs for tasks that appear also in \citet{schick2020exploiting} where chosen to be the same as in their work.
 The PVPs for each task are presented in Appendix~\ref{apx:patterns}.
-
 To provide further analysis and possibly more insights about the behavior of the method, we evaluated each model not only on the PVP that it was trained on but on all three possible PVPs of the evaluated task.
 
 Additional implementation details can be found in Appendix~\ref{apx:implementation-details}.
@@ -147,12 +146,12 @@ The code can be found in the github repository\footnote{\url{https://github.com/
 
 \subsection{Unsupervised Baselines}
 In order to see how fine-tuning affects each task's performance, we evaluated the zero-shot performance of the pre-trained model as a baseline.
-By doing this, the difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
+The difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
 
 \subsection{Single-task Training}
 We trained a supervised model for each classification task.
-Each model was evaluated on the task it was trained on but also on all the other tasks.
-This gives a reference for how training on one singe task benefits when switching to different task in evaluation time.
+Then we evaluated each model on the task it was trained on but also on all the other tasks.
+This gives a reference for how training on one single task benefits when switching to a different task in evaluation time.
 
 \subsection{Multi-task Training}
 To test whether multi-tasking will enable generalization to unseen tasks, we combined the training sets of all the datasets and trained a model omitting one task each time.
@@ -164,7 +163,7 @@ In \citet{schick2020exploiting}, the authors presented a method for few-shot tra
 As an extention for the multi-tasking training, we used PET to train multi-task models with a few examples.
 For each task, we used 1000 examples to train an ensemble of models and generate a soft-labeled dataset.
 Finally, we trained one classifier on a 20K size soft-labeled data.
-This differs from \citet{schick2020exploiting} first by training on multiple tasks but also by using the method described in Section~\ref{sec:method} to train the classifier.
+This differs from \citet{schick2020exploiting} first by training on \textit{multiple} tasks but also by using the method described in Section~\ref{sec:method} to train the classifier.
 
 \section{Results}
 Results for single-task training are reported in Table~\ref{tab:single-on-train-set-summary},
@@ -172,7 +171,7 @@ multi-task training in Table~\ref{tab:multi-on-train-set-summary}
 and few-shot multi-task training in Table~\ref{tab:multi-use-logits-summary}.
 
 \subsection{Single-task Training}
-First, when training and evaluating on the same task, the models gain reasonable performance compared to standard benchmarks.
+First, when training and evaluating on the same task, the models gain reasonable scores compared to standard benchmarks.
 When evaluating single-task models on tasks different from what they were trained on, the results are mixed.
 Some evaluations show improvement over the unsupervised baseline (\textit{i.e.} training on MNLI and testing on QQP)
 while some reduced performance (for instance, training on MNLI and testing on Yahoo!).
@@ -182,27 +181,28 @@ The scores on one of these tasks improved after training on the other.
 However, this does not directly imply generalization.
 Even though AG's News and Yahoo! have different distributions and classes, there is an artifact to consider when comparing them~---~they share two classes in common: Sports and Business.
 Therefore, we cannot conclude that the model learned to generalize to unseen tasks.
-This result can be seen more as domain adaptation than a task generalization.
+This result can be seen more as a domain adaptation than a task generalization.
 
 \subtitle{MNLI on QQP}
-We added paraphrase detection to the set of tasks and evaluated it using QQP dataset.
-Paraphrase detection has some semantic relationship with NLI task~---~two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
-Although these two tasks share some semantic characteristics, they do not share labels and the task itself is different.
+To overcome the issue raised above we tested paraphrase detection which has some semantic relationship with NLI.
+Two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
+There is some semantical overlap between these two tasks, yet their labels and their tasks themselves differ.
 
 The performance of the model trained on MNLI when evaluating on QQP shows an average score of 77.9\%,
-34\% more than the baseline on this task.
-In addition, the model that was trained on QQP achieved 85.9\%,
-meaning that testing the MNLI model on QQP got only 8\% less than the model that was fine-tuned on this task.
+\textit{i.e.} 34\% more than the baseline on this task.
+In addition, training a model on QQP achieved 85.9\%,
+meaning that testing the MNLI model on QQP got only 8\% less than fine-tuning a model on this task.
 While this is still far from concluding that the model is inferring tasks from the description, we believe that such results are meaningful considering the models were trained on clearly different tasks without seeing examples from the target distribution.
 
 \subtitle{PVP Variance}
-For some tasks, training and evaluating using different PVPs performed very differently.
-For example, QQP performed differently with different PVPs on the Yelp Polarity task (can be seen in extended results in Table~\ref{tab:single-on-train-set}), we can see that two of the PVPs scored roughly 88\%, but one PVP got ~49\%.
-This emphasizes the importance of PVP choice for performance and generalization.
+Training and evaluating different PVPs produce very different results for some tasks.
+For example, QQP was not consistant with different PVPs on the Yelp Polarity task (can be seen in extended results in Table~\ref{tab:single-on-train-set}), we can see that two of the PVPs scored roughly 88\%, but one PVP got ~49\%.
+This emphasizes the importance of choosing the right PVP to boost performance and generalization.
 
-\subtitle{Supervised Multi-tasking}
-The first question raised in this work was how training on all tasks together would affect performance on each task.
-The results show that multi-tasking does not hurt much~---~the model achieves slightly the same results on each task as if it was fine-tuned to this task specifically.
+\subtitle{Combining all tasks}
+One question we asked was how multi-task training would affect single-task performance.
+The model was trained on all tasks simultaneously, and the results showed that multi-tasking was not hurmful.
+The model achieves slightly the same results on each task as if it was fine-tuned to this task specifically.
 On most tasks, the multi-task training reduced the score by roughly 0.5-1.0\% per task.
 The only exception is when evaluating on MNLI and QQP, the average score for this pair is low, but one can notice that the variance is high and that the low average score is a result of one low-performing PVP.
 Excluding "bad" PVPs, by using a validation set, for instance, can prevent these cases.
@@ -213,19 +213,19 @@ The performance of the multi-task model without the "bad" PVPs is also very clos
 Testing on the missing task showed different results among the tasks.
  
 \subtitle{AG's News and Yahoo!}
-When omitting AG's News, the model succeeded in getting 82.0\% accuracy, which is an improvement over the baseline.
-This means that training on the other tasks helps to generalize to this task.
-However, when comparing this score with the single-task training, we see almost the same result (81.7\%) as a model trained only on Yahoo!.
-This implies that most of the knowledge learned in the multi-task training got from the Yahoo! task and not from the remaining tasks.
-The similarity artifacts between AG's News and Yahoo! are takes part in this setup as well.
+When omitting AG's News, the model succeeded in getting 82.0\% accuracy, an improvement over the baseline.
+That is, training on other tasks enhances performance over AG's News when never observing this task.
+However, when comparing this score with the single-task training, we see almost the same result (81.7\%) for a model trained only on Yahoo!.
+Thus, most of the knowledge learned in the multi-task training got from the Yahoo! task and not from the remaining tasks.
+Moreover, the similarity artifacts between AG's News and Yahoo! are also taking part in this setup.
 
 \subtitle{Yelp and MNLI}
 On these two tasks, we notice that the scores of the models trained on all other tasks are worse than the baseline model.
-This probably stems from the fact that the training tasks are too semantically different, and the model struggles to learn to be agnostic to the task.
+This probably stems from the fact that the training tasks are too semantically different, and the model struggles to learn to be completely agnostic to the task.
 
 \input{multi-use-logits-summary}
 \subtitle{QQP}
-Similar to single-task training, testing multi-task performance on QQP showed significant improvement over the baseline.
+Similar to single-task training, testing multi-task performance on QQP showed a significant improvement over the baseline.
 Considering the model was not asked to detect paraphrases during training and has not seen paraphrases before evaluation, it is reasonable to claim that the model succeeded in generalizing to this task.\\
 
 To some extent, training a model for multi-tasks benefits with performance on unseen tasks.
@@ -233,23 +233,23 @@ However, it still seems that the model's ability to infer the task from PVP is l
 Although the models failed to generalize to any particular task in the experiments, this limitation is somewhat expected.
 
 \subsection{Few-shot Multi-task Training}
-In this setup, we limited experiments to four tasks due to limited resources.
+In this setup, we restricted experiments to four tasks due to the limitation of resources.
 As in the previous experiment, here too there are mixed results, but similar relationships exist between the tasks.
 
-When omitting AG's news for example, the model improves over the baseline.
+When omitting AG's news, for example, the model improves over the baseline.
 However, for Yelp Full and MNLI, the model fails to perform without seeing the task at train time.
 
 On the other hand, when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary},
 the low performance does not seem to stem from the small number of train examples.
 Moreover, in comparison to supervised results, PET performs only slightly worse.
-This result is not surprising and mostly follows the results revealed in \citet{schick2020exploiting}, but testing it here shows that it can also get the benefits of multi-tasking using the method suggested in this work.
+This result is not surprising and mostly follows the results revealed in \citet{schick2020exploiting}, but testing it here proves that it can also get the benefits of multi-tasking using the method suggested in this work.
 
 \section{Conclusion}
-In this work we tested how training and evaluating using PVPs affects model's ability to multi-task and generalize to unseen tasks.
-The results show that training for multi-tasking is feasible for achieving almost same performance as for singe-task fine-tuning for a specific task.
-Although, the ability to generalize to unseen tasks is limited, at least in the experimental setup of the current work.
-Scores on different tasks did improve when training on completely different tasks, but this improvement cannot clearly affiliated with the ability to infer the new task and use existing knowledge for solving it. 
-However, the presented improvement on unseen tasks can be benificial and in our opinion can be used in some applications of such models in real-world use cases. 
+In this work, we tested how training and evaluating using PVPs affects the model's ability to multi-task and generalize to unseen tasks.
+The results show that training for multi-tasking is feasible for achieving almost the same performance as single-task fine-tuning for a specific task.
+However, the ability to generalize to unseen tasks is limited, at least in the experimental setup of the current work.
+Scores on different tasks did improve when training on entirely different tasks, but we cannot affiliate this improvement with the ability to infer the new task and use existing knowledge for solving it. 
+Still, the presented improvement on unseen tasks can be helpful in some applications of such models in real-world use cases. 
 
 \nocite{*}
 \bibliography{acl2020}
@@ -299,6 +299,7 @@ The task is to predict whether two sentences are paraphrases one of the other.
 
 \subsection{Implementation Details}
 \label{apx:implementation-details}
+Experiments were implemented in PyTorch \citep{NEURIPS2019_9015}.
 The following hyperparameters were chosen for the experiments in Section~\ref{sec:experiments}.
 We chose the Roberta Large as the model to be used across all experiments.
 This choice was done in order to be able to compare results with \citet{schick2020exploiting}.
