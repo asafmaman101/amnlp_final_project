@@ -52,7 +52,7 @@
 \newcommand\todo[1]{\noindent\textcolor{red}{#1}}
 \newcommand{\subtitle}[1]{\vspace{5pt}\noindent\textbf{#1}\quad}
 
-\title{Multi-Task Patterns Training for Task Generalization}
+\title{Multi-Task Pattern Training for Task Generalization}
 
 \author{Asaf Maman \\
   Blavatnik School of Computer Science, Tel Aviv University \\
@@ -84,12 +84,11 @@ We chose the prediction according to the scores the model assigns to a subset of
 The model will assign a given input to the class whose verbalizer received the highest score.
 The method is presented visually in Figure~\ref{fig:method}.
 
-This mechanism delivers a few advantages over conventional classification methods.
+There are a few advantages to using this mechanism over traditional methods.
 First, as mentioned before, it provides some sense of task description encoded in the \textit{pattern-verbalizer pair} (PVP).
 That way, the model is fed with information about the task and may be able to infer it from the PVP.
-It might allow the model to adapt itself to new tasks without a need for a large amount of new-task examples.
-This can facilitate switching tasks by only changing the PVP with no need to initialize and train task-specific weights.
-Furthermore, deciding according to MLM predictions makes the fine-tuning closer to the pre-training task and leverages the language modeling knowledge attained for the downstream task.
+By simply changing the PVP, the model might be able to adapt itself to new tasks without needing a large amount of new-task examples or having to train and initialize task-specific weights.
+Furthermore, deciding according to MLM predictions makes the fine-tuning closer to the pre-training task and leverages the language modeling knowledge attained for the downstream task.\\
 
 In this work, we investigate how the performance of masked language models (MLMs) is affected when trained on multiple classification tasks.
 In addition, we would like to examine whether providing a task description in the form of PVP can help MLMs generalize to \textit{unseen tasks}.
@@ -105,7 +104,8 @@ However, the model's ability to infer tasks from PVPs appears to be restricted t
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{mlm_classification}
-	\caption{Classification using cloze test~---~reformulating the sample as a new phrase with exactly one mask token.}
+	\caption{Classification using cloze test~---~reformulating the sample as a new phrase with exactly one mask token. Then using the scores the language model assigns to the mask token and picking the class with the highest
+ score.}
 	\label{fig:method}
 \vspace{-10pt}
 \end{figure}
@@ -130,37 +130,37 @@ Finally, we then use the cross-entropy between $q_\text{\textbf{p}}(l\ |\ \textb
 \input{single-on-train-set-summary}
 
 We conducted several experiments to test the questions raised above.
-In this section we will describe three setups: Single-task, Multi-task and Few-shot Multi-task training.
+In this section, we will describe three setups: Single-task, Multi-task and Few-shot Multi-task training.
 
 The datasets used in the following experiments are AG's News, Yahoo!, Yelp, MNLI and QQP.
-The consideration when picking datasets was to cover a variety of tasks: text categorization, sentiment analysis, NLI and paraphrase detection.
+When selecting datasets, we intended to cover a variety of tasks: text categorization, sentiment analysis, NLI and paraphrase detection.
 Further details about the datasets are deferred to Appendix~\ref{apx:datasets}.
 
-For each task, a set of three PVPs was manually chosen.
-% The PVPs for tasks that appear also in \citet{schick2020exploiting} where chosen to be the same as in their work.
-The PVPs for each task are presented in Appendix~\ref{apx:patterns}.
-To provide further analysis and possibly more insights about the behavior of the method, we evaluated each model not only on the PVP that it was trained on but on all three possible PVPs of the evaluated task.
+For each task, we manually picked a set of three PVPs.
+% The PVPs for tasks that appear also in \citet{schick2020exploiting} were chosen to be the same as in their work.
+We present the PVPs for each task in Appendix~\ref{apx:patterns}.
+To provide further analysis and possibly more insights about the method's behavior, we evaluated each model not only on the PVP that it was trained on but also on all three possible PVPs of the evaluated task.
 
 Additional implementation details can be found in Appendix~\ref{apx:implementation-details}.
-The code can be found in the github repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
+We published the code to the GitHub repository\footnote{\url{https://github.com/asafmaman101/amnlp_final_project_code}}.
 
 \subsection{Unsupervised Baselines}
-In order to see how fine-tuning affects each task's performance, we evaluated the zero-shot performance of the pre-trained model as a baseline.
-The difference between the reported scores of the fine-tuned model and the baseline demonstrates exacly the effect of the fine-tuning on the train tasks.
+To see how fine-tuning affects each task's performance, we evaluated the zero-shot performance of the pre-trained model as a baseline.
+The difference between the reported scores of the fine-tuned model and the baseline demonstrates precisely the effect of the fine-tuning on the train tasks.
 
 \subsection{Single-task Training}
 We trained a supervised model for each classification task.
-Then we evaluated each model on the task it was trained on but also on all the other tasks.
-This gives a reference for how training on one single task benefits when switching to a different task in evaluation time.
+Then we evaluated each model on the task it was trained on, but also on all the other tasks.
+This indicates how training on one single task benefits when switching to a different task in evaluation time.
 
 \subsection{Multi-task Training}
-To test whether multi-tasking will enable generalization to unseen tasks, we combined the training sets of all the datasets and trained a model omitting one task each time.
+To test whether multi-tasking will enable generalization to unseen tasks, we combined the training sets of all the datasets and trained a model omitting \textit{one task} each time.
 The missing task was the one that we aimed to generalize to.
-We trained each sample with a PVP corresponding to the task it belongs to and evaluated all models on each task separatly.
+We trained each example with a PVP corresponding to the task it belongs to and evaluated all models on each task separately.
 
 \subsection{Few-shot Multi-task Training}
 In \citet{schick2020exploiting}, the authors presented a method for few-shot training called PET.
-As an extention for the multi-tasking training, we used PET to train multi-task models with a few examples.
+As an extension for the supervised multi-tasking training, we used PET to train multi-task models with a few examples.
 For each task, we used 1000 examples to train an ensemble of models and generate a soft-labeled dataset.
 Finally, we trained one classifier on a 20K size soft-labeled data.
 This differs from \citet{schick2020exploiting} first by training on \textit{multiple} tasks but also by using the method described in Section~\ref{sec:method} to train the classifier.
@@ -181,27 +181,27 @@ The scores on one of these tasks improved after training on the other.
 However, this does not directly imply generalization.
 Even though AG's News and Yahoo! have different distributions and classes, there is an artifact to consider when comparing them~---~they share two classes in common: Sports and Business.
 Therefore, we cannot conclude that the model learned to generalize to unseen tasks.
-This result can be seen more as a domain adaptation than a task generalization.
+This result can be seen more like a domain adaptation than a task generalization.
 
 \subtitle{MNLI on QQP}
-To overcome the issue raised above we tested paraphrase detection which has some semantic relationship with NLI.
+To overcome the issue raised above, we tested paraphrase detection, which has some semantic relationship with NLI.
 Two phrases with entailment connection might in some cases be paraphrases, while natural and contradiction pairs are not.
-There is some semantical overlap between these two tasks, yet their labels and their tasks themselves differ.
+Although there is some semantic overlap between these two tasks, their labels and the tasks themselves differ.
 
 The performance of the model trained on MNLI when evaluating on QQP shows an average score of 77.9\%,
 \textit{i.e.} 34\% more than the baseline on this task.
 In addition, training a model on QQP achieved 85.9\%,
 meaning that testing the MNLI model on QQP got only 8\% less than fine-tuning a model on this task.
-While this is still far from concluding that the model is inferring tasks from the description, we believe that such results are meaningful considering the models were trained on clearly different tasks without seeing examples from the target distribution.
+While this is still far from concluding that the model is inferring tasks from the description, we believe that such results are meaningful considering that we trained the models on entirely different tasks and without seeing examples from the target distribution.
 
 \subtitle{PVP Variance}
 Training and evaluating different PVPs produce very different results for some tasks.
-For example, QQP was not consistant with different PVPs on the Yelp Polarity task (can be seen in extended results in Table~\ref{tab:single-on-train-set}), we can see that two of the PVPs scored roughly 88\%, but one PVP got ~49\%.
+For example, QQP was not consistent with different PVPs on the Yelp Polarity task (can be seen in extended results in Table~\ref{tab:single-on-train-set}), we can see that two of the PVPs scored roughly 88\%, but one PVP got ~49\%.
 This emphasizes the importance of choosing the right PVP to boost performance and generalization.
 
 \subtitle{Combining all tasks}
 One question we asked was how multi-task training would affect single-task performance.
-The model was trained on all tasks simultaneously, and the results showed that multi-tasking was not hurmful.
+We trained a model on all tasks simultaneously, and the results showed that multi-tasking was not harmful.
 The model achieves slightly the same results on each task as if it was fine-tuned to this task specifically.
 On most tasks, the multi-task training reduced the score by roughly 0.5-1.0\% per task.
 The only exception is when evaluating on MNLI and QQP, the average score for this pair is low, but one can notice that the variance is high and that the low average score is a result of one low-performing PVP.
@@ -215,7 +215,7 @@ Testing on the missing task showed different results among the tasks.
 \subtitle{AG's News and Yahoo!}
 When omitting AG's News, the model succeeded in getting 82.0\% accuracy, an improvement over the baseline.
 That is, training on other tasks enhances performance over AG's News when never observing this task.
-However, when comparing this score with the single-task training, we see almost the same result (81.7\%) for a model trained only on Yahoo!.
+However, when comparing this score with the single-task training, we see almost the same result (81.7\%) for a model trained \textit{only} on Yahoo!.
 Thus, most of the knowledge learned in the multi-task training got from the Yahoo! task and not from the remaining tasks.
 Moreover, the similarity artifacts between AG's News and Yahoo! are also taking part in this setup.
 
@@ -236,7 +236,7 @@ Although the models failed to generalize to any particular task in the experimen
 In this setup, we restricted experiments to four tasks due to the limitation of resources.
 As in the previous experiment, here too there are mixed results, but similar relationships exist between the tasks.
 
-When omitting AG's news, for example, the model improves over the baseline.
+When omitting AG's news or Yahoo!, for example, the model improves over the baseline as in the last two setups.
 However, for Yelp Full and MNLI, the model fails to perform without seeing the task at train time.
 
 On the other hand, when comparing the results to those in Table~\ref{tab:multi-on-train-set-summary},
@@ -244,12 +244,13 @@ the low performance does not seem to stem from the small number of train example
 Moreover, in comparison to supervised results, PET performs only slightly worse.
 This result is not surprising and mostly follows the results revealed in \citet{schick2020exploiting}, but testing it here proves that it can also get the benefits of multi-tasking using the method suggested in this work.
 
+We believe that our result opens the way for exploring ways to use PVPs, for example, adjusting a supervised model for a new task with only a few examples.
 \section{Conclusion}
 In this work, we tested how training and evaluating using PVPs affects the model's ability to multi-task and generalize to unseen tasks.
 The results show that training for multi-tasking is feasible for achieving almost the same performance as single-task fine-tuning for a specific task.
 However, the ability to generalize to unseen tasks is limited, at least in the experimental setup of the current work.
 Scores on different tasks did improve when training on entirely different tasks, but we cannot affiliate this improvement with the ability to infer the new task and use existing knowledge for solving it. 
-Still, the presented improvement on unseen tasks can be helpful in some applications of such models in real-world use cases. 
+Still, the presented improvement on unseen tasks can be beneficial in some applications of such models in real-world use cases. 
 
 \nocite{*}
 \bibliography{acl2020}
@@ -277,15 +278,15 @@ The task is to classify each article to one of four categories: (1) World, (2) S
 \vspace{8pt}
 \noindent \textbf{Yahoo!} \quad
 Text categorization dataset. It contains 1.46M pairs of questions and answers.
-The train set contains 1.4M samples and test set 60K samples.
+The train set contains 1.4M samples and the test set 60K samples.
 The task is to classify each pair to its subject out of 10 possible options: (1) Society (2) Science (3) Health (4) Education (5) Computer (6) Sports (7) Business (8) Entertainment (9) Relationship (10) Politics.
 
 \vspace{8pt}
 \noindent \textbf{Yelp} \quad
 Yelp Reviews dataset contains 650K train samples and 50K test samples.
-There are two version of tasks for this datset.
+There are two versions of tasks for this dataset.
 One, called "Yelp Full" is to classify a review for a 5-star rating.
-The other version named "Yelp Polarity" is to predict whether the review sentiment was positive or negative.
+The other version, named "Yelp Polarity" is to predict whether the review sentiment was positive or negative.
 
 \vspace{8pt}
 \noindent \textbf{MNLI} \quad
@@ -300,18 +301,19 @@ The task is to predict whether two sentences are paraphrases one of the other.
 \subsection{Implementation Details}
 \label{apx:implementation-details}
 Experiments were implemented in PyTorch \citep{NEURIPS2019_9015}.
-The following hyperparameters were chosen for the experiments in Section~\ref{sec:experiments}.
-We chose the Roberta Large as the model to be used across all experiments.
-This choice was done in order to be able to compare results with \citet{schick2020exploiting}.
+We chose the following hyperparameters for the experiments in Section~\ref{sec:experiments}.
+We chose to use Roberta Large across all experiments.
+It enables us to compare results with \citet{schick2020exploiting}.
 We trained the model with a max sequence size of 256 tokens.
-The batch size was chosen so that it will fit into 11GB GPU infrastucture, this led to a batch size of 2. 
-In order to simulate larger batch sizes we accumulated gradients for 8 steps to have effective batch size of 32.
-Learning rate was chosen to be 1e-5, we trained each model for 3 epochs on the whole train set.
-Temperature was tuned to value of 2, weight decay to 0.01, and adam epsilon to 1e-8.
+We chose the batch size to fit into 11GB GPU infrastructure, which led to a batch size of 2. 
+To simulate larger batch sizes, we accumulated gradients for eight steps to have an effective batch size of 32.
+We chose the learning rate to be 1e-5.
+We trained each model for three epochs on the whole train set.
+The temperature was tuned to a value of 2, weight decay to 0.01, and adam epsilon to 1e-8.
 
 \subsection{Patterns}
 \label{apx:patterns}
-We chose the following datasets to evaluate performence on.
+We chose the following datasets to evaluate performance.
 
 \vspace{8pt}
 \noindent \textbf{AG's News} \quad
@@ -325,11 +327,11 @@ For the experiments, we used the following three patterns:
 		 $P_3(x)=$ $a$ (\_\_\_\_) $b$ &  \\
 	\end{tabularx}
 \end{table}
-The verbalizers used for each class were World, Sports, Business and Tech corresponding to the dataset categories.
+The verbalizers used for each class were World, Sports, Business and Tech, corresponding to the dataset categories.
 
 \vspace{8pt}
 \noindent \textbf{Yahoo} \quad
-Each sample $\textbf{x}$ in the dataset consists of question and answer.
+Each sample $\textbf{x}$ in the dataset consists of a question and an answer.
 That is $\textbf{x}=(a, b)$ where $a$ and $b$ represents the question and answer respectively.
 For the experiments, we used the following three patterns:
 \begin{table}[H]
@@ -355,7 +357,7 @@ For the experiments, we used the following three patterns:
 \end{table}
 The Yelp Full and Yelp Polarity were differentiated by the verbalizers used in each task.
 For Yelp Full, the 1-5 rating scale was affiliated with "terrible", "bad", "okay", "good", "great" verbalizers.
-Yelp Polarity was flatten to "bad" and "good" only.
+Yelp Polarity was flattened to "bad" and "good" only.
 
 \vspace{8pt}
 \noindent \textbf{MNLI} \quad
@@ -368,7 +370,7 @@ The three patterns used for the experiments were:
 		$P_3(x)=$"$a$"? \_\_\_\_, "$b$" & \\
 	\end{tabularx}
 \end{table}
-And the verbalizers used for each were "Wrong", "Right" and "Maybe" for Contradiction, Entailment and Natural classes respectively.
+And the verbalizers used for each were "Wrong", "Right" and "Maybe" for Contradiction, Entailment and Natural classes, respectively.
 $P_3$ differs from $P_1$ by its verbalizers, it was used with "No", "Yes" and "Maybe" instead.
 
 \vspace{8pt}
@@ -382,12 +384,12 @@ The three patterns used for the experiments were:
 		$P_3(x)=$"$a$"? \_\_\_\_, "$b$" & \\
 	\end{tabularx}
 \end{table}
-And the verbalizers used for each were "Wrong" and "Right" for sentences that are not paraphrases and are paraphrases respectively.
+And the verbalizers used for each were "Wrong" and "Right" for sentences that are not paraphrases and are paraphrases, respectively.
 $P_3$ differs from $P_1$ by its verbalizers, it was used with "No" and "Yes" instead.
 
 \section{Full Results Report}
 \label{apx:full-results-report}
-The exact score for each single experiment is describe in and Table~\ref{tab:single-on-train-set} and Table~\ref{tab:multi-use-logits-full}.
+The exact score for each single experiment is described in and Table~\ref{tab:single-on-train-set}, Table~\ref{tab:multi-on-train-set} and Table~\ref{tab:multi-use-logits-full}.
 \input{single-on-train-set-horizontal}
 \input{multi-on-train-set}
 \input{multi-use-logits-full}
